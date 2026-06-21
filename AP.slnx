@@ -1,0 +1,7 @@
+<Solution>
+  <Project Path="Proyecto Foro/Proyecto Foro.csproj" />
+  <Project Path="TechForo.Core/TechForo.Core.csproj" />
+  <Project Path="TechForo.Data/TechForo.Data.csproj" />
+  <Project Path="TechForo.Models/TechForo.Models.csproj" />
+  <Project Path="TechForo.MVC/TechForo.MVC.csproj" />
+</Solution>
