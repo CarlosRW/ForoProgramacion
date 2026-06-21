@@ -1,0 +1,11 @@
+D:\Users\carlos\Documents\GitHub\ForoProgramacion\TechForo.Core\obj\Debug\TechForo.Core.csproj.AssemblyReference.cache
+D:\Users\carlos\Documents\GitHub\ForoProgramacion\TechForo.Core\obj\Debug\TechForo.Core.csproj.CoreCompileInputs.cache
+D:\Users\carlos\Documents\GitHub\ForoProgramacion\TechForo.Core\bin\Debug\TechForo.Core.dll
+D:\Users\carlos\Documents\GitHub\ForoProgramacion\TechForo.Core\bin\Debug\TechForo.Core.pdb
+D:\Users\carlos\Documents\GitHub\ForoProgramacion\TechForo.Core\bin\Debug\TechForo.Data.dll
+D:\Users\carlos\Documents\GitHub\ForoProgramacion\TechForo.Core\bin\Debug\TechForo.Models.dll
+D:\Users\carlos\Documents\GitHub\ForoProgramacion\TechForo.Core\bin\Debug\TechForo.Data.pdb
+D:\Users\carlos\Documents\GitHub\ForoProgramacion\TechForo.Core\bin\Debug\TechForo.Models.pdb
+D:\Users\carlos\Documents\GitHub\ForoProgramacion\TechForo.Core\obj\Debug\TechForo.5DA8BC3E.Up2Date
+D:\Users\carlos\Documents\GitHub\ForoProgramacion\TechForo.Core\obj\Debug\TechForo.Core.dll
+D:\Users\carlos\Documents\GitHub\ForoProgramacion\TechForo.Core\obj\Debug\TechForo.Core.pdb

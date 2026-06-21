@@ -1,7 +1,9 @@
 <Solution>
-  <Project Path="Proyecto Foro/Proyecto Foro.csproj" />
-  <Project Path="TechForo.Core/TechForo.Core.csproj" />
-  <Project Path="TechForo.Data/TechForo.Data.csproj" />
-  <Project Path="TechForo.Models/TechForo.Models.csproj" />
-  <Project Path="TechForo.MVC/TechForo.MVC.csproj" />
+  <Folder Name="/DataBase/">
+    <File Path="Script_BD_DevSpace.sql" />
+  </Folder>
+  <Project Path="TechForo.Core/TechForo.Core.csproj" Id="9d117db0-3145-41cf-9104-3e937b9165d9" />
+  <Project Path="TechForo.Data/TechForo.Data.csproj" Id="8e9a426c-70f3-4105-a25a-4c31bb7cefef" />
+  <Project Path="TechForo.Models/TechForo.Models.csproj" Id="451f593a-a6e1-4406-a40d-64c685d7035b" />
+  <Project Path="TechForo.MVC/TechForo.MVC.csproj" Id="5f37ccc3-a31a-4702-9e23-6874aa5011a5" />
 </Solution>

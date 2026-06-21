@@ -1,0 +1,6 @@
+D:\Users\carlos\Documents\GitHub\ForoProgramacion\TechForo.Data\obj\Debug\TechForo.Data.csproj.AssemblyReference.cache
+D:\Users\carlos\Documents\GitHub\ForoProgramacion\TechForo.Data\obj\Debug\TechForo.Data.csproj.CoreCompileInputs.cache
+D:\Users\carlos\Documents\GitHub\ForoProgramacion\TechForo.Data\bin\Debug\TechForo.Data.dll
+D:\Users\carlos\Documents\GitHub\ForoProgramacion\TechForo.Data\bin\Debug\TechForo.Data.pdb
+D:\Users\carlos\Documents\GitHub\ForoProgramacion\TechForo.Data\obj\Debug\TechForo.Data.dll
+D:\Users\carlos\Documents\GitHub\ForoProgramacion\TechForo.Data\obj\Debug\TechForo.Data.pdb
