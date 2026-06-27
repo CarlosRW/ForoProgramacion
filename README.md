@@ -1,6 +1,6 @@
-# DevSpace 💻
+# TechForum 💻
 
-**DevSpace** es un foro de discusión web diseñado para estudiantes de programación y desarrolladores junior. Permite a los usuarios plantear dudas técnicas, compartir fragmentos de código con formato y marcar las respuestas que resuelven con éxito sus problemas, emulando la dinámica de StackOverflow.
+**TechForum** es un foro de discusión web diseñado para estudiantes de programación y desarrolladores junior. Permite a los usuarios plantear dudas técnicas, compartir fragmentos de código con formato y marcar las respuestas que resuelven con éxito sus problemas, emulando la dinámica de StackOverflow.
 
 Proyecto final del curso **SC-601 Programación Avanzada**.
 
