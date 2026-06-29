@@ -1,1 +1,64 @@
-﻿<h2>Bienvenido a TechForum</h2>
+﻿@model IEnumerable<TechForo.Models.Vista_de_modelos.PreguntaResumenViewModel>
+@{
+    ViewBag.Title = "Inicio";
+}
+
+<div class="ds-hero">
+    <div class="ds-hero-tag">// foro de discusión técnica</div>
+    <h1>Preguntá. Compartí código. Resolvé bugs en equipo.</h1>
+    <p>
+        TechForum es un espacio para que desarrolladores publiquen dudas técnicas,
+        compartan bloques de código y construyan, entre todos, un historial de
+        soluciones.
+    </p>
+    @if (Request.IsAuthenticated)
+    {
+        @Html.ActionLink("+ Nueva pregunta", "Create", "Preguntas", null, new { @class = "btn btn-ds-primary" })
+    }
+    else
+    {
+        @Html.ActionLink("Crear cuenta gratis", "Register", "Account", null, new { @class = "btn btn-ds-primary" })
+        @Html.ActionLink("Iniciar sesión", "Login", "Account", null, new { @class = "btn btn-ds-outline ms-2" })
+    }
+</div>
+
+<div class="ds-toolbar">
+    <div class="ds-search">
+        <input type="search" class="form-control" placeholder="Buscar preguntas por título, etiqueta o autor..." disabled />
+    </div>
+    <div class="text-muted-help">
+        @Model.Count() pregunta(s) · datos de ejemplo (Avance 2)
+    </div>
+</div>
+
+<div class="ds-question-list">
+    @foreach (var pregunta in Model)
+    {
+        <div class="ds-question-item">
+            <div class="ds-question-stats @(pregunta.Resuelta ? "is-resuelta" : "")">
+                <strong>@pregunta.TotalRespuestas</strong>
+                <span>respuestas</span>
+            </div>
+            <div class="ds-question-body">
+                <a class="ds-question-title" href="#">@pregunta.Titulo</a>
+                <p class="ds-question-excerpt">@pregunta.Resumen</p>
+                <div class="ds-question-meta">
+                    <span class="ds-avatar ds-avatar-sm">@pregunta.AutorIniciales</span>
+                    <span>@pregunta.AutorNombre</span>
+                    <span>·</span>
+                    <span>@pregunta.TiempoTranscurrido</span>
+                    <span>·</span>
+                    <span>@pregunta.TotalVistas vistas</span>
+                    @if (pregunta.Resuelta)
+                    {
+                        <span class="ds-badge-resuelta">✓ resuelta</span>
+                    }
+                    @foreach (var etiqueta in pregunta.Etiquetas)
+                    {
+                        <span class="ds-tag">@etiqueta</span>
+                    }
+                </div>
+            </div>
+        </div>
+    }
+</div>

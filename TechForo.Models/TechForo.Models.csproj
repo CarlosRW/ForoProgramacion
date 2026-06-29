@@ -47,6 +47,8 @@
     <Compile Include="Vista de modelos\LoginModels.cs" />
     <Compile Include="Vista de modelos\PreguntaModel.cs" />
     <Compile Include="Vista de modelos\RespuestaModel.cs" />
+    <Compile Include="Vista de modelos\PreguntaResumenViewModel.cs" />
+    <Compile Include="Vista de modelos\PerfilUsuarioViewModel.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
