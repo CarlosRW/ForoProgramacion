@@ -19,12 +19,13 @@ Proyecto final del curso **SC-601 Programación Avanzada**.
 
 ## 📌 Estado del proyecto
 
-> Este README se actualiza en cada avance del curso. Estado actual: **Avance 1**.
+> Este README se actualiza en cada avance del curso. Estado actual: **Avance 2**.
 
 - [x] Arquitectura en capas (Data / Models / Core / MVC)
 - [x] Base de datos y script de creación
 - [x] Login y registro de usuario
-- [ ] Landing page
+- [X] Landing page
+- [X] Perfil Editable
 - [ ] Pantalla de mantenimiento (crear/editar preguntas y respuestas)
 - [ ] Principios SOLID documentados en código
 - [ ] Design Patterns documentados en código
