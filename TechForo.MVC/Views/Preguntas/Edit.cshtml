@@ -1,0 +1,47 @@
+@model TechForo.Models.Vista_de_modelos.PreguntaModel
+
+@{
+    ViewBag.Title = "Editar Pregunta";
+}
+
+<h2>Editar Pregunta</h2>
+
+@using (Html.BeginForm("Edit", "Preguntas", FormMethod.Post, new { enctype = "multipart/form-data" }))
+{
+    @Html.AntiForgeryToken()
+    @Html.HiddenFor(model => model.PreguntaID)
+    @Html.HiddenFor(model => model.ImagenUrl)
+
+    <div class="mb-3">
+        @Html.LabelFor(model => model.Titulo, new { @class = "form-label" })
+        @Html.TextBoxFor(model => model.Titulo, new { @class = "form-control" })
+        @Html.ValidationMessageFor(model => model.Titulo, "", new { @class = "text-danger" })
+    </div>
+
+    <div class="mb-3">
+        @Html.LabelFor(model => model.Descripcion, new { @class = "form-label" })
+        @Html.TextAreaFor(model => model.Descripcion, new { @class = "form-control", rows = 6 })
+        @Html.ValidationMessageFor(model => model.Descripcion, "", new { @class = "text-danger" })
+    </div>
+
+    <div class="mb-3">
+        @Html.LabelFor(model => model.Codigo, new { @class = "form-label" })
+        @Html.TextAreaFor(model => model.Codigo, new { @class = "form-control", rows = 8 })
+    </div>
+
+    if (!string.IsNullOrEmpty(Model.ImagenUrl))
+    {
+        <div class="mb-3">
+            <label class="form-label">Imagen actual</label><br />
+            <img src="@Model.ImagenUrl" style="max-width:300px;" class="img-thumbnail" />
+        </div>
+    }
+
+    <div class="mb-3">
+        <label class="form-label">Cambiar imagen</label>
+        <input type="file" name="imagen" class="form-control" accept="image/*" />
+    </div>
+
+    <button type="submit" class="btn btn-primary">Guardar cambios</button>
+    @Html.ActionLink("Volver", "Index", "Preguntas", null, new { @class = "btn btn-secondary ms-2" })
+}

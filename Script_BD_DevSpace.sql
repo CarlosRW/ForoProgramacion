@@ -56,3 +56,20 @@ BEGIN
     );
 END
 GO
+
+--Nuebo
+
+USE DevSpaceDB;
+GO
+
+IF COL_LENGTH('Preguntas', 'Codigo') IS NULL
+BEGIN
+    ALTER TABLE Preguntas ADD Codigo VARCHAR(MAX) NULL;
+END
+GO
+
+IF COL_LENGTH('Preguntas', 'ImagenUrl') IS NULL
+BEGIN
+    ALTER TABLE Preguntas ADD ImagenUrl VARCHAR(300) NULL;
+END
+GO

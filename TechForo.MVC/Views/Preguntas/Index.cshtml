@@ -1,1 +1,104 @@
-<h2>Preguntas</h2>
+@model List<TechForo.Data.Entidades.Pregunta>
+
+@{
+    ViewBag.Title = "Preguntas";
+}
+
+<h2 class="mb-4 text-light">Preguntas</h2>
+
+@if (Request.IsAuthenticated)
+{
+    <p>
+        @Html.ActionLink("Nueva pregunta", "Create", "Preguntas", null, new { @class = "btn btn-primary" })
+    </p>
+}
+
+@foreach (var pregunta in Model)
+{
+    <div class="card mb-4 pregunta-card">
+        <div class="card-body">
+            <h4 class="pregunta-titulo">@pregunta.Titulo</h4>
+
+            <p class="pregunta-descripcion">@pregunta.Descripcion</p>
+
+            @if (!string.IsNullOrEmpty(pregunta.Codigo))
+            {
+                <pre class="pregunta-codigo"><code>@pregunta.Codigo</code></pre>
+            }
+
+            @if (!string.IsNullOrEmpty(pregunta.ImagenUrl))
+            {
+                <div class="pregunta-imagen">
+                    <img src="@pregunta.ImagenUrl" class="img-fluid rounded" />
+                </div>
+            }
+
+            <p class="pregunta-info">
+                Publicado por @pregunta.UsuarioNombre - @pregunta.FechaCreacion.ToString("dd/MM/yyyy")
+            </p>
+
+            @if (Session["UsuarioID"] != null && pregunta.UsuarioID == Convert.ToInt32(Session["UsuarioID"]))
+            {
+                @Html.ActionLink("Editar", "Edit", "Preguntas", new { id = pregunta.PreguntaID }, new { @class = "btn btn-warning btn-sm me-2" })
+
+                using (Html.BeginForm("Delete", "Preguntas", new { id = pregunta.PreguntaID }, FormMethod.Post, new { style = "display:inline;" }))
+                {
+                    @Html.AntiForgeryToken()
+
+                    <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('¿Seguro que desea eliminar esta pregunta?');">
+                        Eliminar
+                    </button>
+                }
+            }
+        </div>
+    </div>
+}
+
+<style>
+    .pregunta-card {
+        background-color: #111827;
+        border: 1px solid #334155;
+        color: #e5e7eb;
+        border-radius: 10px;
+    }
+
+    .pregunta-titulo {
+        color: #f8fafc;
+        font-weight: bold;
+        margin-bottom: 10px;
+    }
+
+    .pregunta-descripcion {
+        color: #d1d5db;
+        font-size: 16px;
+        margin-bottom: 15px;
+    }
+
+    .pregunta-codigo {
+        background-color: #020617;
+        color: #e2e8f0;
+        border: 1px solid #475569;
+        border-radius: 8px;
+        padding: 15px;
+        margin-top: 15px;
+        margin-bottom: 15px;
+        white-space: pre-wrap;
+    }
+
+    .pregunta-imagen {
+        text-align: center;
+        margin-top: 15px;
+        margin-bottom: 15px;
+    }
+
+        .pregunta-imagen img {
+            max-width: 350px;
+            max-height: 350px;
+            object-fit: contain;
+        }
+
+    .pregunta-info {
+        color: #94a3b8;
+        margin-top: 15px;
+    }
+</style>

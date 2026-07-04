@@ -12,33 +12,52 @@
     <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-dark ds-topbar">
         <div class="container ds-shell">
             @Html.ActionLink("</> TechForum", "Index", "Home", new { area = "" }, new { @class = "navbar-brand ds-brand" })
+
             <button type="button" class="navbar-toggler" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" title="Alternar navegación" aria-controls="navbarSupportedContent"
                     aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
+
             <div class="collapse navbar-collapse d-sm-inline-flex justify-content-between">
                 <ul class="navbar-nav flex-grow-1">
-                    <li>@Html.ActionLink("Inicio", "Index", "Home", new { area = "" }, new { @class = "nav-link" })</li>
+                    <li>
+                        @Html.ActionLink("Inicio", "Index", "Home", new { area = "" }, new { @class = "nav-link" })
+                    </li>
+
+                    <li>
+                        @Html.ActionLink("Preguntas", "Index", "Preguntas", new { area = "" }, new { @class = "nav-link" })
+                    </li>
                 </ul>
+
                 <ul class="navbar-nav align-items-sm-center">
                     @if (Request.IsAuthenticated)
                     {
                         <li class="nav-item">
                             @Html.ActionLink("Mi perfil", "Perfil", "Account", new { area = "" }, new { @class = "nav-link ds-avatar-link" })
                         </li>
-                        <li>@Html.ActionLink("Cerrar sesión", "Logout", "Account", new { area = "" }, new { @class = "nav-link" })</li>
+
+                        <li>
+                            @Html.ActionLink("Cerrar sesión", "Logout", "Account", new { area = "" }, new { @class = "nav-link" })
+                        </li>
                     }
                     else
                     {
-                        <li>@Html.ActionLink("Iniciar sesión", "Login", "Account", new { area = "" }, new { @class = "nav-link" })</li>
-                        <li>@Html.ActionLink("Registrarse", "Register", "Account", new { area = "" }, new { @class = "nav-link" })</li>
+                        <li>
+                            @Html.ActionLink("Iniciar sesión", "Login", "Account", new { area = "" }, new { @class = "nav-link" })
+                        </li>
+
+                        <li>
+                            @Html.ActionLink("Registrarse", "Register", "Account", new { area = "" }, new { @class = "nav-link" })
+                        </li>
                     }
                 </ul>
             </div>
         </div>
     </nav>
+
     <div class="container ds-shell body-content">
         @RenderBody()
+
         <footer class="ds-footer mt-4">
             <p>&copy; @DateTime.Now.Year - TechForum · Foro de discusión técnica</p>
         </footer>
