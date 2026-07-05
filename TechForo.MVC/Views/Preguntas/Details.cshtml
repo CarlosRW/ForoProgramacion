@@ -1,0 +1,210 @@
+@model TechForo.Models.Vista_de_modelos.PreguntaDetalleViewModel
+
+@{
+    ViewBag.Title = "Detalle de Pregunta";
+}
+
+<div class="detalle-contenedor">
+    <div class="card pregunta-detalle-card mb-4">
+        <div class="card-body">
+            <h2 class="pregunta-titulo">@Model.Titulo</h2>
+
+            <p class="pregunta-descripcion">@Model.Descripcion</p>
+
+            @if (!string.IsNullOrEmpty(Model.Codigo))
+            {
+                <pre class="pregunta-codigo"><code>@Model.Codigo</code></pre>
+            }
+
+            @if (!string.IsNullOrEmpty(Model.ImagenUrl))
+            {
+                <div class="pregunta-imagen">
+                    <img src="@Model.ImagenUrl" class="img-fluid rounded" />
+                </div>
+            }
+
+            <p class="pregunta-info">
+                Publicado por @Model.UsuarioNombre - @Model.FechaCreacion.ToString("dd/MM/yyyy")
+            </p>
+
+            @Html.ActionLink("Volver", "Index", "Preguntas", null, new { @class = "btn btn-secondary btn-sm" })
+
+            @if (Session["UsuarioID"] != null && Model.UsuarioID == Convert.ToInt32(Session["UsuarioID"]))
+            {
+                @Html.ActionLink("Editar", "Edit", "Preguntas", new { id = Model.PreguntaID }, new { @class = "btn btn-warning btn-sm ms-2" })
+            }
+        </div>
+    </div>
+
+    <h3 class="text-light mb-3">Respuestas</h3>
+
+    @if (Model.Respuestas == null || Model.Respuestas.Count == 0)
+    {
+        <div class="alert alert-secondary">
+            Esta pregunta todavía no tiene respuestas.
+        </div>
+    }
+    else
+    {
+        foreach (var respuesta in Model.Respuestas)
+        {
+            <div class="card respuesta-card mb-3">
+                <div class="card-body">
+                    @if (!string.IsNullOrEmpty(respuesta.Contenido))
+                    {
+                        <p class="respuesta-contenido">@respuesta.Contenido</p>
+                    }
+
+                    @if (!string.IsNullOrEmpty(respuesta.Codigo))
+                    {
+                        <pre class="respuesta-codigo"><code>@respuesta.Codigo</code></pre>
+                    }
+
+                    @if (!string.IsNullOrEmpty(respuesta.ImagenUrl))
+                    {
+                        <div class="respuesta-imagen">
+                            <img src="@respuesta.ImagenUrl" class="img-fluid rounded" />
+                        </div>
+                    }
+
+                    <p class="respuesta-info">
+                        Respondido por @respuesta.UsuarioNombre - @respuesta.FechaCreacion.ToString("dd/MM/yyyy HH:mm")
+                    </p>
+
+                    @if (Session["UsuarioID"] != null && respuesta.UsuarioID == Convert.ToInt32(Session["UsuarioID"]))
+                    {
+                        @Html.ActionLink("Editar", "Edit", "Respuestas", new { id = respuesta.RespuestaID }, new { @class = "btn btn-warning btn-sm me-2" })
+
+                        using (Html.BeginForm("Delete", "Respuestas", new { id = respuesta.RespuestaID }, FormMethod.Post, new { style = "display:inline;" }))
+                        {
+                            @Html.AntiForgeryToken()
+
+                            <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('¿Seguro que desea eliminar esta respuesta?');">
+                                Eliminar
+                            </button>
+                        }
+                    }
+                </div>
+            </div>
+        }
+    }
+
+    <div class="card respuesta-form-card mt-4">
+        <div class="card-body">
+            <h4 class="form-titulo">Añadir respuesta</h4>
+
+            @if (Request.IsAuthenticated)
+            {
+                if (TempData["ErrorRespuesta"] != null)
+                {
+                    <div class="alert alert-danger">
+                        @TempData["ErrorRespuesta"]
+                    </div>
+                }
+
+                using (Html.BeginForm("Create", "Respuestas", FormMethod.Post, new { enctype = "multipart/form-data" }))
+                {
+                    @Html.AntiForgeryToken()
+
+                    <input type="hidden" name="PreguntaID" value="@Model.PreguntaID" />
+
+                    <div class="mb-3">
+                        <label class="form-label">Respuesta</label>
+                        <textarea name="Contenido" class="form-control" rows="5" placeholder="Escriba aquí su respuesta."></textarea>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Bloque de código</label>
+                        <textarea name="Codigo" class="form-control codigo-textarea" rows="7" placeholder="Pegue aquí código si es necesario."></textarea>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Imagen o captura</label>
+                        <input type="file" name="imagen" class="form-control" accept="image/*" />
+                    </div>
+
+                    <button type="submit" class="btn btn-primary">
+                        Publicar respuesta
+                    </button>
+                }
+            }
+            else
+            {
+                <p class="text-light">
+                    Debe iniciar sesión para responder esta pregunta.
+                </p>
+
+                @Html.ActionLink("Iniciar sesión", "Login", "Account", null, new { @class = "btn btn-primary" })
+            }
+        </div>
+    </div>
+</div>
+
+<style>
+    .detalle-contenedor {
+        margin-top: 20px;
+    }
+
+    .pregunta-detalle-card,
+    .respuesta-card,
+    .respuesta-form-card {
+        background-color: #111827;
+        border: 1px solid #334155;
+        color: #e5e7eb;
+        border-radius: 10px;
+    }
+
+    .pregunta-titulo {
+        color: #f8fafc;
+        font-weight: bold;
+        margin-bottom: 10px;
+    }
+
+    .pregunta-descripcion,
+    .respuesta-contenido {
+        color: #d1d5db;
+        font-size: 16px;
+        white-space: pre-wrap;
+    }
+
+    .pregunta-codigo,
+    .respuesta-codigo {
+        background-color: #020617;
+        color: #e2e8f0;
+        border: 1px solid #475569;
+        border-radius: 8px;
+        padding: 15px;
+        margin-top: 15px;
+        margin-bottom: 15px;
+        white-space: pre-wrap;
+    }
+
+    .pregunta-imagen,
+    .respuesta-imagen {
+        text-align: center;
+        margin-top: 15px;
+        margin-bottom: 15px;
+    }
+
+        .pregunta-imagen img,
+        .respuesta-imagen img {
+            max-width: 450px;
+            max-height: 450px;
+            object-fit: contain;
+        }
+
+    .pregunta-info,
+    .respuesta-info {
+        color: #94a3b8;
+        margin-top: 15px;
+    }
+
+    .form-titulo {
+        color: #f8fafc;
+        margin-bottom: 15px;
+    }
+
+    .codigo-textarea {
+        font-family: Consolas, monospace;
+    }
+</style>

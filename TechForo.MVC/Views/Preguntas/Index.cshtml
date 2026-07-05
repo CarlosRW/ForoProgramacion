@@ -37,6 +37,8 @@
                 Publicado por @pregunta.UsuarioNombre - @pregunta.FechaCreacion.ToString("dd/MM/yyyy")
             </p>
 
+            @Html.ActionLink("Ver detalle", "Details", "Preguntas", new { id = pregunta.PreguntaID }, new { @class = "btn btn-info btn-sm me-2" })
+
             @if (Session["UsuarioID"] != null && pregunta.UsuarioID == Convert.ToInt32(Session["UsuarioID"]))
             {
                 @Html.ActionLink("Editar", "Edit", "Preguntas", new { id = pregunta.PreguntaID }, new { @class = "btn btn-warning btn-sm me-2" })

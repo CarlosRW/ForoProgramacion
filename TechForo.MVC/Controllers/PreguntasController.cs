@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Web;
 using System.Web.Mvc;
@@ -11,16 +12,61 @@ namespace TechForo.MVC.Controllers
     public class PreguntasController : Controller
     {
         private readonly PreguntaBusiness _preguntaBusiness;
+        private readonly RespuestaBusiness _respuestaBusiness;
 
         public PreguntasController()
         {
             _preguntaBusiness = new PreguntaBusiness();
+            _respuestaBusiness = new RespuestaBusiness();
         }
 
         public ActionResult Index()
         {
             var preguntas = _preguntaBusiness.ObtenerTodas();
             return View(preguntas);
+        }
+
+        public ActionResult Details(int? id)
+        {
+            if (id == null)
+                return RedirectToAction("Index");
+
+            var pregunta = _preguntaBusiness.ObtenerPorId(id.Value);
+
+            if (pregunta == null)
+                return HttpNotFound();
+
+            var respuestas = _respuestaBusiness.ObtenerPorPregunta(id.Value);
+
+            PreguntaDetalleViewModel model = new PreguntaDetalleViewModel
+            {
+                PreguntaID = pregunta.PreguntaID,
+                Titulo = pregunta.Titulo,
+                Descripcion = pregunta.Descripcion,
+                Codigo = pregunta.Codigo,
+                ImagenUrl = pregunta.ImagenUrl,
+                FechaCreacion = pregunta.FechaCreacion,
+                UsuarioID = pregunta.UsuarioID,
+                UsuarioNombre = pregunta.UsuarioNombre,
+                Respuestas = new List<RespuestaModel>()
+            };
+
+            foreach (var respuesta in respuestas)
+            {
+                model.Respuestas.Add(new RespuestaModel
+                {
+                    RespuestaID = respuesta.RespuestaID,
+                    Contenido = respuesta.Contenido,
+                    Codigo = respuesta.Codigo,
+                    ImagenUrl = respuesta.ImagenUrl,
+                    FechaCreacion = respuesta.FechaCreacion,
+                    UsuarioID = respuesta.UsuarioID,
+                    PreguntaID = respuesta.PreguntaID,
+                    UsuarioNombre = respuesta.UsuarioNombre
+                });
+            }
+
+            return View(model);
         }
 
         [Authorize]

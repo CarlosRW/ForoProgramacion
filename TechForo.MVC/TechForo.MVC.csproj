@@ -186,6 +186,8 @@
     <Content Include="Views\Account\Register.cshtml" />
     <Content Include="Views\Account\Perfil.cshtml" />
     <Content Include="Views\Preguntas\Edit.cshtml" />
+    <Content Include="Views\Preguntas\Details.cshtml" />
+    <Content Include="Views\Respuestas\Edit.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

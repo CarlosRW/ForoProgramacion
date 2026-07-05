@@ -57,7 +57,7 @@ BEGIN
 END
 GO
 
---Nuebo
+--Nuevo
 
 USE DevSpaceDB;
 GO
@@ -71,5 +71,27 @@ GO
 IF COL_LENGTH('Preguntas', 'ImagenUrl') IS NULL
 BEGIN
     ALTER TABLE Preguntas ADD ImagenUrl VARCHAR(300) NULL;
+END
+GO
+
+--nuevo 2
+
+USE DevSpaceDB;
+GO
+
+IF COL_LENGTH('dbo.Respuestas', 'Codigo') IS NULL
+BEGIN
+    ALTER TABLE Respuestas ADD Codigo VARCHAR(MAX) NULL;
+END
+GO
+
+--nuevo 3
+
+USE DevSpaceDB;
+GO
+
+IF COL_LENGTH('dbo.Respuestas', 'ImagenUrl') IS NULL
+BEGIN
+    ALTER TABLE Respuestas ADD ImagenUrl VARCHAR(300) NULL;
 END
 GO
