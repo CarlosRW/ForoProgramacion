@@ -35,7 +35,9 @@
                         <li class="nav-item">
                             @Html.ActionLink("Mi perfil", "Perfil", "Account", new { area = "" }, new { @class = "nav-link ds-avatar-link" })
                         </li>
-
+                        <li>
+                            @Html.ActionLink("Configuración", "Index", "Configuracion", null, new { @class = "nav-link" })
+                        </li>
                         <li>
                             @Html.ActionLink("Cerrar sesión", "Logout", "Account", new { area = "" }, new { @class = "nav-link" })
                         </li>

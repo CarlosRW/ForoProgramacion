@@ -1,0 +1,95 @@
+@model TechForo.Models.Vista_de_modelos.ConfiguracionModel
+
+@{
+    ViewBag.Title = "Configuración";
+}
+
+<div class="ds-hero">
+    <div class="ds-hero-tag">// configuración del foro</div>
+
+    <h1>Configuración</h1>
+
+    <p>
+        Personalizá algunas preferencias de visualización del foro.
+    </p>
+</div>
+
+<div class="card ds-card">
+    <div class="card-body">
+
+        @if (TempData["Mensaje"] != null)
+        {
+            <div class="alert alert-success">
+                @TempData["Mensaje"]
+            </div>
+        }
+
+        @using (Html.BeginForm())
+        {
+            @Html.AntiForgeryToken()
+
+            <div class="mb-4">
+                <h5>Tema</h5>
+
+                <div class="form-check">
+                    @Html.CheckBoxFor(m => m.ModoOscuro, new { @class = "form-check-input" })
+                    @Html.LabelFor(m => m.ModoOscuro, new { @class = "form-check-label" })
+                </div>
+            </div>
+
+            <hr />
+
+            <div class="mb-4">
+                <h5>Contenido</h5>
+
+                <div class="form-check">
+                    @Html.CheckBoxFor(m => m.MostrarImagenes, new { @class = "form-check-input" })
+                    @Html.LabelFor(m => m.MostrarImagenes, new { @class = "form-check-label" })
+                </div>
+
+                <div class="form-check mt-2">
+                    @Html.CheckBoxFor(m => m.MostrarCodigo, new { @class = "form-check-input" })
+                    @Html.LabelFor(m => m.MostrarCodigo, new { @class = "form-check-label" })
+                </div>
+            </div>
+
+            <hr />
+
+            <div class="mb-4">
+                <h5>Notificaciones</h5>
+
+                <div class="form-check">
+                    @Html.CheckBoxFor(m => m.Notificaciones, new { @class = "form-check-input" })
+                    @Html.LabelFor(m => m.Notificaciones, new { @class = "form-check-label" })
+                </div>
+            </div>
+
+            <button class="btn btn-ds-primary" type="submit">
+                Guardar configuración
+            </button>
+        }
+
+    </div>
+</div>
+
+<style>
+
+    .ds-card {
+        background: #111827;
+        border: 1px solid #334155;
+        border-radius: 12px;
+        color: #e5e7eb;
+    }
+
+    .form-check {
+        margin-top: 12px;
+    }
+
+    h5 {
+        color: #f8fafc;
+    }
+
+    hr {
+        border-color: #334155;
+    }
+</style>
