@@ -63,5 +63,28 @@ namespace TechForo.Core.Business
                 return builder.ToString();
             }
         }
+
+        // SOLID: Single Responsibility - el controller solo pide el perfil de este usuario.
+        public Usuario ObtenerPerfil(int usuarioID)
+        {
+            return _usuarioRepository.ObtenerPorId(usuarioID);
+        }
+
+        // DP: Template Method - siempre se valida antes de guardar,
+        // sin importar que campos cambien; centraliza esa regla en un solo lugar
+        // en vez de repetirla en cada controller que edite un Usuario.
+        public bool ActualizarPerfil(Usuario usuario, out string mensajeError)
+        {
+            mensajeError = string.Empty;
+
+            if (string.IsNullOrWhiteSpace(usuario.Nombre))
+            {
+                mensajeError = "El nombre no puede estar vacío.";
+                return false;
+            }
+
+            _usuarioRepository.ActualizarPerfil(usuario);
+            return true;
+        }
     }
 }

@@ -1,11 +1,11 @@
 -- Crear la base de datos si no existe
-IF NOT EXISTS (SELECT name FROM sys.databases WHERE name = 'DevSpaceDB')
+IF NOT EXISTS (SELECT name FROM sys.databases WHERE name = 'TechForumDB')
 BEGIN
-    CREATE DATABASE DevSpaceDB;
+    CREATE DATABASE TechForumDB;
 END
 GO
 
-USE DevSpaceDB;
+USE TechForumDB;
 GO
 
 -- Tabla Usuarios
@@ -57,9 +57,7 @@ BEGIN
 END
 GO
 
---Nuevo
-
-USE DevSpaceDB;
+USE TechForumDB;
 GO
 
 IF COL_LENGTH('Preguntas', 'Codigo') IS NULL
@@ -74,9 +72,7 @@ BEGIN
 END
 GO
 
---nuevo 2
-
-USE DevSpaceDB;
+USE TechForumDB;
 GO
 
 IF COL_LENGTH('dbo.Respuestas', 'Codigo') IS NULL
@@ -85,13 +81,41 @@ BEGIN
 END
 GO
 
---nuevo 3
+----
 
-USE DevSpaceDB;
+USE TechForumDB;
 GO
 
 IF COL_LENGTH('dbo.Respuestas', 'ImagenUrl') IS NULL
 BEGIN
     ALTER TABLE Respuestas ADD ImagenUrl VARCHAR(300) NULL;
+END
+GO
+----
+
+USE TechForumDB;
+GO
+
+IF COL_LENGTH('Usuarios', 'Titular') IS NULL
+BEGIN
+    ALTER TABLE Usuarios ADD Titular VARCHAR(150) NULL;
+END
+GO
+
+IF COL_LENGTH('Usuarios', 'Biografia') IS NULL
+BEGIN
+    ALTER TABLE Usuarios ADD Biografia VARCHAR(500) NULL;
+END
+GO
+
+IF COL_LENGTH('Usuarios', 'Ubicacion') IS NULL
+BEGIN
+    ALTER TABLE Usuarios ADD Ubicacion VARCHAR(150) NULL;
+END
+GO
+
+IF COL_LENGTH('Usuarios', 'AvatarUrl') IS NULL
+BEGIN
+    ALTER TABLE Usuarios ADD AvatarUrl VARCHAR(300) NULL;
 END
 GO

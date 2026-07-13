@@ -1,7 +1,10 @@
 ﻿using System;
+using System.IO;
+using System.Web;
 using System.Web.Mvc;
 using System.Web.Security;
 using TechForo.Core.Business;
+using TechForo.Data.Entidades;
 using TechForo.Models.Vista_de_modelos;
 
 namespace TechForo.MVC.Controllers
@@ -76,54 +79,102 @@ namespace TechForo.MVC.Controllers
             return RedirectToAction("Index", "Home");
         }
 
-        // Avance 2: pantalla de mantenimiento de usuario (perfil editable).
+        // Avance 3: pantalla de mantenimiento de usuario (perfil editable).
+        // Ya no usa Session como "base de datos" - lee y guarda contra la
+        // tabla Usuarios a traves de UsuarioBusiness/UsuarioRepository.
         // SOLID: Single Responsibility - el controlador solo orquesta la peticion
-        // HTTP, no calcula nada de negocio; por ahora lee/escribe en Session porque
-        // todavia no existe ObtenerPorId/ActualizarPerfil en UsuarioRepository.
+        // HTTP (arma el ViewModel, revisa ModelState, guarda el archivo), toda
+        // la logica de negocio (validar, guardar) vive en UsuarioBusiness.
         [Authorize]
         [HttpGet]
         public ActionResult Perfil()
         {
-            PerfilUsuarioViewModel model = ObtenerPerfilDeSesion();
+            int usuarioID = Convert.ToInt32(Session["UsuarioID"]);
+            Usuario usuario = _usuarioBusiness.ObtenerPerfil(usuarioID);
+
+            if (usuario == null)
+                return HttpNotFound();
+
+            PerfilUsuarioViewModel model = new PerfilUsuarioViewModel
+            {
+                UsuarioID = usuario.UsuarioID,
+                Nombre = usuario.Nombre,
+                Correo = usuario.Correo,
+                Titular = usuario.Titular,
+                Biografia = usuario.Biografia,
+                Ubicacion = usuario.Ubicacion,
+                AvatarUrl = usuario.AvatarUrl
+            };
+
             return View(model);
         }
 
         [Authorize]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Perfil(PerfilUsuarioViewModel model)
+        public ActionResult Perfil(PerfilUsuarioViewModel model, HttpPostedFileBase imagenPerfil)
         {
             if (!ModelState.IsValid)
                 return View(model);
 
-            // DP: Strategy (simplificado) - mientras no haya persistencia real,
-            // "guardar" el perfil es simplemente actualizar los datos de Session
-            // que ya usa el resto del sitio (ver _Layout, "Hola, @Session[...]").
+            int usuarioID = Convert.ToInt32(Session["UsuarioID"]);
+
+            // No confiamos en el AvatarUrl que viene del formulario para decidir
+            // que guardar: se lee el valor actual desde la BD y solo se
+            // reemplaza si el usuario subio una imagen nueva de verdad.
+            Usuario usuarioActual = _usuarioBusiness.ObtenerPerfil(usuarioID);
+
+            if (usuarioActual == null)
+                return HttpNotFound();
+
+            string avatarUrl = usuarioActual.AvatarUrl;
+
+            if (imagenPerfil != null && imagenPerfil.ContentLength > 0)
+                avatarUrl = GuardarImagen(imagenPerfil);
+
+            Usuario usuario = new Usuario
+            {
+                UsuarioID = usuarioID,
+                Nombre = model.Nombre,
+                Titular = model.Titular,
+                Biografia = model.Biografia,
+                Ubicacion = model.Ubicacion,
+                AvatarUrl = avatarUrl
+            };
+
+            string mensajeError;
+            bool exito = _usuarioBusiness.ActualizarPerfil(usuario, out mensajeError);
+
+            if (!exito)
+            {
+                ModelState.AddModelError("", mensajeError);
+                model.AvatarUrl = avatarUrl;
+                return View(model);
+            }
+
+            // El nombre tambien se usa en el _Layout ("Hola, @Session[...]"),
+            // se actualiza aca para que se refleje sin tener que volver a loguear.
             Session["UsuarioNombre"] = model.Nombre;
-            Session["UsuarioAvatarUrl"] = model.AvatarUrl;
-            Session["UsuarioTitular"] = model.Titular;
-            Session["UsuarioBiografia"] = model.Biografia;
-            Session["UsuarioUbicacion"] = model.Ubicacion;
 
             TempData["MensajeExito"] = "Perfil actualizado con éxito.";
             return RedirectToAction("Perfil");
         }
 
-        private PerfilUsuarioViewModel ObtenerPerfilDeSesion()
+        // DP: mismo Factory Method simple que ya usan PreguntasController y
+        // RespuestasController para guardar imagenes subidas por el usuario.
+        private string GuardarImagen(HttpPostedFileBase imagen)
         {
-            return new PerfilUsuarioViewModel
-            {
-                UsuarioID = Session["UsuarioID"] != null ? (int)Session["UsuarioID"] : 0,
-                Nombre = Session["UsuarioNombre"] as string ?? "Usuario DevSpace",
-                Correo = User.Identity.Name,
-                Titular = Session["UsuarioTitular"] as string ?? "Estudiante de Programación Avanzada",
-                Biografia = Session["UsuarioBiografia"] as string ?? "",
-                Ubicacion = Session["UsuarioUbicacion"] as string ?? "San José, Costa Rica",
-                AvatarUrl = Session["UsuarioAvatarUrl"] as string ?? "",
-                MiembroDesde = DateTime.Now.AddMonths(-2),
-                TotalPreguntas = 3,
-                TotalRespuestas = 8
-            };
+            string carpeta = Server.MapPath("~/Uploads/Perfiles/");
+
+            if (!Directory.Exists(carpeta))
+                Directory.CreateDirectory(carpeta);
+
+            string nombreArchivo = Guid.NewGuid().ToString() + Path.GetExtension(imagen.FileName);
+            string rutaCompleta = Path.Combine(carpeta, nombreArchivo);
+
+            imagen.SaveAs(rutaCompleta);
+
+            return "/Uploads/Perfiles/" + nombreArchivo;
         }
     }
 }

@@ -71,5 +71,71 @@ namespace TechForo.Data.Repositorios
                 }
             }
         }
+
+        public Usuario ObtenerPorId(int usuarioID)
+        {
+            Usuario usuario = null;
+
+            using (SqlConnection conexion = ConexionDB.ObtenerConexion())
+            {
+                string query = @"SELECT UsuarioID, Nombre, Correo, Password,
+                        Titular, Biografia, Ubicacion, AvatarUrl
+                        FROM Usuarios
+                        WHERE UsuarioID = @UsuarioID";
+
+                using (SqlCommand comando = new SqlCommand(query, conexion))
+                {
+                    comando.Parameters.AddWithValue("@UsuarioID", usuarioID);
+                    conexion.Open();
+
+                    using (SqlDataReader lector = comando.ExecuteReader())
+                    {
+                        if (lector.Read())
+                        {
+                            usuario = new Usuario
+                            {
+                                UsuarioID = Convert.ToInt32(lector["UsuarioID"]),
+                                Nombre = lector["Nombre"].ToString(),
+                                Correo = lector["Correo"].ToString(),
+                                Password = lector["Password"].ToString(),
+                                Titular = lector["Titular"] == DBNull.Value ? "" : lector["Titular"].ToString(),
+                                Biografia = lector["Biografia"] == DBNull.Value ? "" : lector["Biografia"].ToString(),
+                                Ubicacion = lector["Ubicacion"] == DBNull.Value ? "" : lector["Ubicacion"].ToString(),
+                                AvatarUrl = lector["AvatarUrl"] == DBNull.Value ? "" : lector["AvatarUrl"].ToString()
+                            };
+                        }
+                    }
+                }
+            }
+
+            return usuario;
+        }
+
+        public void ActualizarPerfil(Usuario usuario)
+        {
+            using (SqlConnection conexion = ConexionDB.ObtenerConexion())
+            {
+                string query = @"UPDATE Usuarios
+                        SET Nombre = @Nombre,
+                            Titular = @Titular,
+                            Biografia = @Biografia,
+                            Ubicacion = @Ubicacion,
+                            AvatarUrl = @AvatarUrl
+                        WHERE UsuarioID = @UsuarioID";
+
+                using (SqlCommand comando = new SqlCommand(query, conexion))
+                {
+                    comando.Parameters.AddWithValue("@UsuarioID", usuario.UsuarioID);
+                    comando.Parameters.AddWithValue("@Nombre", usuario.Nombre);
+                    comando.Parameters.AddWithValue("@Titular", (object)usuario.Titular ?? DBNull.Value);
+                    comando.Parameters.AddWithValue("@Biografia", (object)usuario.Biografia ?? DBNull.Value);
+                    comando.Parameters.AddWithValue("@Ubicacion", (object)usuario.Ubicacion ?? DBNull.Value);
+                    comando.Parameters.AddWithValue("@AvatarUrl", (object)usuario.AvatarUrl ?? DBNull.Value);
+
+                    conexion.Open();
+                    comando.ExecuteNonQuery();
+                }
+            }
+        }
     }
 }

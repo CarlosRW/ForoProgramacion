@@ -1,12 +1,12 @@
-D:\Users\carlos\Documents\GitHub\ForoProgramacion\TechForo.Models\obj\Debug\TechForo.Models.csproj.AssemblyReference.cache
-D:\Users\carlos\Documents\GitHub\ForoProgramacion\TechForo.Models\obj\Debug\TechForo.Models.csproj.CoreCompileInputs.cache
-D:\Users\carlos\Documents\GitHub\ForoProgramacion\TechForo.Models\bin\Debug\TechForo.Models.dll
-D:\Users\carlos\Documents\GitHub\ForoProgramacion\TechForo.Models\bin\Debug\TechForo.Models.pdb
-D:\Users\carlos\Documents\GitHub\ForoProgramacion\TechForo.Models\obj\Debug\TechForo.Models.dll
-D:\Users\carlos\Documents\GitHub\ForoProgramacion\TechForo.Models\obj\Debug\TechForo.Models.pdb
 D:\Isaac Daniel Cardenas\descargas\ForoProgramacion-main(1)\ForoProgramacion-main\TechForo.Models\bin\Debug\TechForo.Models.dll
 D:\Isaac Daniel Cardenas\descargas\ForoProgramacion-main(1)\ForoProgramacion-main\TechForo.Models\bin\Debug\TechForo.Models.pdb
 D:\Isaac Daniel Cardenas\descargas\ForoProgramacion-main(1)\ForoProgramacion-main\TechForo.Models\obj\Debug\TechForo.Models.csproj.AssemblyReference.cache
 D:\Isaac Daniel Cardenas\descargas\ForoProgramacion-main(1)\ForoProgramacion-main\TechForo.Models\obj\Debug\TechForo.Models.csproj.CoreCompileInputs.cache
 D:\Isaac Daniel Cardenas\descargas\ForoProgramacion-main(1)\ForoProgramacion-main\TechForo.Models\obj\Debug\TechForo.Models.dll
 D:\Isaac Daniel Cardenas\descargas\ForoProgramacion-main(1)\ForoProgramacion-main\TechForo.Models\obj\Debug\TechForo.Models.pdb
+D:\Users\carlos\Documents\GitHub\ForoProgramacion\TechForo.Models\bin\Debug\TechForo.Models.dll
+D:\Users\carlos\Documents\GitHub\ForoProgramacion\TechForo.Models\bin\Debug\TechForo.Models.pdb
+D:\Users\carlos\Documents\GitHub\ForoProgramacion\TechForo.Models\obj\Debug\TechForo.Models.csproj.AssemblyReference.cache
+D:\Users\carlos\Documents\GitHub\ForoProgramacion\TechForo.Models\obj\Debug\TechForo.Models.csproj.CoreCompileInputs.cache
+D:\Users\carlos\Documents\GitHub\ForoProgramacion\TechForo.Models\obj\Debug\TechForo.Models.dll
+D:\Users\carlos\Documents\GitHub\ForoProgramacion\TechForo.Models\obj\Debug\TechForo.Models.pdb
