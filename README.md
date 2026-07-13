@@ -19,16 +19,17 @@ Proyecto final del curso **SC-601 Programación Avanzada**.
 
 ## 📌 Estado del proyecto
 
-> Este README se actualiza en cada avance del curso. Estado actual: **Avance 2**.
+> Este README se actualiza en cada avance del curso. Estado actual: **Avance 3 (en progreso)**.
 
 - [x] Arquitectura en capas (Data / Models / Core / MVC)
-- [x] Base de datos y script de creación
+- [x] Base de datos y script de creación (`TechForumDB`)
 - [x] Login y registro de usuario
-- [X] Landing page
-- [X] Perfil Editable
-- [ ] Pantalla de mantenimiento (crear/editar preguntas y respuestas)
-- [ ] Principios SOLID documentados en código
-- [ ] Design Patterns documentados en código
+- [x] Landing page (conectada a datos reales de la BD)
+- [x] Perfil editable (conectado a la BD, incluye subida de foto de perfil)
+- [ ] Pantalla de mantenimiento (crear/editar preguntas y respuestas) — CRUD ya existe, falta lógica de negocio y comentarios SOLID/DP
+- [ ] Configuración persistente (sigue simulada, no guarda todavía)
+- [ ] Principios SOLID documentados en código — parcial (Usuario, Home, Account)
+- [ ] Design Patterns documentados en código — parcial (Usuario, Home, Account)
 
 ---
 
@@ -45,18 +46,20 @@ Proyecto final del curso **SC-601 Programación Avanzada**.
 
 ## 🗄️ Base de datos
 
-El script de creación está en [`DataBase/Script_BD_DevSpace.sql`](./DataBase/Script_BD_DevSpace.sql). Crea automáticamente la base `DevSpaceDB` (si no existe) y sus tres tablas principales:
+El script de creación está en [`DataBase/Script_BD_TechForum.sql`](./DataBase/Script_BD_TechForum.sql). Crea automáticamente la base `TechForumDB` (si no existe) y va agregando cambios incrementales en bloques `--nuevo N` a medida que avanza el curso (columnas de Perfil, Etiquetas/Vistas/Resuelta en Preguntas, etc.).
 
 | Tabla        | Descripción                                              |
 |--------------|-----------------------------------------------------------|
-| `Usuarios`   | Cuentas registradas (correo único, password hasheado)     |
+| `Usuarios`   | Cuentas registradas (correo único, password hasheado, datos de perfil) |
 | `Preguntas`  | Dudas técnicas planteadas por los usuarios                 |
 | `Respuestas` | Respuestas asociadas a una pregunta                        |
 
 ### Cómo levantar la base
 1. Abrí SQL Server Management Studio.
 2. Conectate a tu instancia local (ej. `localhost\SQLEXPRESS`).
-3. Ejecutá el script completo `Script_BD_DevSpace.sql`.
+3. Ejecutá el script completo `Script_BD_TechForum.sql`.
+
+> ⚠️ La base cambió de nombre (antes `DevSpaceDB`, ahora `TechForumDB`). Si ya tenías la base vieja creada, lo más simple es borrarla y correr el script completo de nuevo desde cero.
 
 ---
 
@@ -70,7 +73,7 @@ El script de creación está en [`DataBase/Script_BD_DevSpace.sql`](./DataBase/S
    ```xml
    <connectionStrings>
      <add name="ForoConnectionString"
-          connectionString="Server=TU_INSTANCIA;Database=DevSpaceDB;Integrated Security=True;"
+          connectionString="Server=TU_INSTANCIA;Database=TechForumDB;Integrated Security=True;"
           providerName="System.Data.SqlClient" />
    </connectionStrings>
    ```
@@ -90,6 +93,13 @@ El script de creación está en [`DataBase/Script_BD_DevSpace.sql`](./DataBase/S
 - **Logout** (`/Account/Logout`): cierra sesión y limpia la cookie de autenticación.
 
 Las contraseñas **nunca se guardan en texto plano**.
+
+### Perfil de usuario
+- **Ver/editar perfil** (`/Account/Perfil`): nombre, titular, biografía y ubicación se leen y guardan contra la tabla `Usuarios` (ya no vive en Session).
+- **Foto de perfil**: subida de archivo real al servidor (`~/Uploads/Perfiles/`), no se guarda como base64 en la base de datos.
+
+### Landing page
+- **Inicio** (`/Home/Index`): lista las preguntas reales de la base de datos, ordenadas por fecha, con el conteo real de respuestas por pregunta. Etiquetas, vistas y estado "resuelta" ya existen en la BD pero todavía nadie las llena desde el formulario de crear pregunta — quedan en 0/vacío hasta que se conecte esa parte.
 
 ---
 
