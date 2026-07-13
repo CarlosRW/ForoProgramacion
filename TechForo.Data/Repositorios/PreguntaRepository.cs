@@ -15,10 +15,11 @@ namespace TechForo.Data.Repositorios
             using (SqlConnection conexion = ConexionDB.ObtenerConexion())
             {
                 string query = @"SELECT P.PreguntaID, P.Titulo, P.Descripcion, P.Codigo, P.ImagenUrl,
-                                P.FechaCreacion, P.UsuarioID, U.Nombre AS UsuarioNombre
-                                FROM Preguntas P
-                                INNER JOIN Usuarios U ON P.UsuarioID = U.UsuarioID
-                                ORDER BY P.FechaCreacion DESC";
+                    P.FechaCreacion, P.UsuarioID, U.Nombre AS UsuarioNombre,
+                    P.Etiquetas, P.TotalVistas, P.Resuelta
+                    FROM Preguntas P
+                    INNER JOIN Usuarios U ON P.UsuarioID = U.UsuarioID
+                    ORDER BY P.FechaCreacion DESC";
 
                 using (SqlCommand comando = new SqlCommand(query, conexion))
                 {
@@ -44,10 +45,11 @@ namespace TechForo.Data.Repositorios
             using (SqlConnection conexion = ConexionDB.ObtenerConexion())
             {
                 string query = @"SELECT P.PreguntaID, P.Titulo, P.Descripcion, P.Codigo, P.ImagenUrl,
-                                P.FechaCreacion, P.UsuarioID, U.Nombre AS UsuarioNombre
-                                FROM Preguntas P
-                                INNER JOIN Usuarios U ON P.UsuarioID = U.UsuarioID
-                                WHERE P.PreguntaID = @PreguntaID";
+                    P.FechaCreacion, P.UsuarioID, U.Nombre AS UsuarioNombre,
+                    P.Etiquetas, P.TotalVistas, P.Resuelta
+                    FROM Preguntas P
+                    INNER JOIN Usuarios U ON P.UsuarioID = U.UsuarioID
+                    WHERE P.PreguntaID = @PreguntaID";
 
                 using (SqlCommand comando = new SqlCommand(query, conexion))
                 {
@@ -166,7 +168,10 @@ namespace TechForo.Data.Repositorios
                 ImagenUrl = lector["ImagenUrl"] == DBNull.Value ? "" : lector["ImagenUrl"].ToString(),
                 FechaCreacion = Convert.ToDateTime(lector["FechaCreacion"]),
                 UsuarioID = Convert.ToInt32(lector["UsuarioID"]),
-                UsuarioNombre = lector["UsuarioNombre"].ToString()
+                UsuarioNombre = lector["UsuarioNombre"].ToString(),
+                Etiquetas = lector["Etiquetas"] == DBNull.Value ? "" : lector["Etiquetas"].ToString(),
+                TotalVistas = Convert.ToInt32(lector["TotalVistas"]),
+                Resuelta = Convert.ToBoolean(lector["Resuelta"])
             };
         }
     }

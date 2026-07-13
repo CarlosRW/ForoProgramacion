@@ -17,5 +17,8 @@ namespace TechForo.Data.Entidades
         public DateTime FechaCreacion { get; set; }
         public int UsuarioID { get; set; }
         public string UsuarioNombre { get; set; }
+        public string Etiquetas { get; set; }
+        public int TotalVistas { get; set; }
+        public bool Resuelta { get; set; }
     }
 }

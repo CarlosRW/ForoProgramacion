@@ -81,8 +81,6 @@ BEGIN
 END
 GO
 
-----
-
 USE TechForumDB;
 GO
 
@@ -91,7 +89,6 @@ BEGIN
     ALTER TABLE Respuestas ADD ImagenUrl VARCHAR(300) NULL;
 END
 GO
-----
 
 USE TechForumDB;
 GO
@@ -117,5 +114,27 @@ GO
 IF COL_LENGTH('Usuarios', 'AvatarUrl') IS NULL
 BEGIN
     ALTER TABLE Usuarios ADD AvatarUrl VARCHAR(300) NULL;
+END
+GO
+
+-- preguntas
+USE TechForumDB;
+GO
+
+IF COL_LENGTH('Preguntas', 'Etiquetas') IS NULL
+BEGIN
+    ALTER TABLE Preguntas ADD Etiquetas VARCHAR(300) NULL;
+END
+GO
+
+IF COL_LENGTH('Preguntas', 'TotalVistas') IS NULL
+BEGIN
+    ALTER TABLE Preguntas ADD TotalVistas INT NOT NULL DEFAULT 0;
+END
+GO
+
+IF COL_LENGTH('Preguntas', 'Resuelta') IS NULL
+BEGIN
+    ALTER TABLE Preguntas ADD Resuelta BIT NOT NULL DEFAULT 0;
 END
 GO
