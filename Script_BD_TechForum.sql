@@ -138,3 +138,26 @@ BEGIN
     ALTER TABLE Preguntas ADD Resuelta BIT NOT NULL DEFAULT 0;
 END
 GO
+
+-- Indices usados por los listados y el detalle de preguntas.
+IF NOT EXISTS (
+    SELECT 1 FROM sys.indexes
+    WHERE name = 'IX_Preguntas_FechaCreacion'
+      AND object_id = OBJECT_ID('dbo.Preguntas')
+)
+BEGIN
+    CREATE INDEX IX_Preguntas_FechaCreacion
+        ON dbo.Preguntas (FechaCreacion DESC);
+END
+GO
+
+IF NOT EXISTS (
+    SELECT 1 FROM sys.indexes
+    WHERE name = 'IX_Respuestas_PreguntaID'
+      AND object_id = OBJECT_ID('dbo.Respuestas')
+)
+BEGIN
+    CREATE INDEX IX_Respuestas_PreguntaID
+        ON dbo.Respuestas (PreguntaID);
+END
+GO
