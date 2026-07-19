@@ -19,6 +19,7 @@ namespace TechForo.Data.Entidades
         public string UsuarioNombre { get; set; }
         public string Etiquetas { get; set; }
         public int TotalVistas { get; set; }
+        public int TotalRespuestas { get; set; }
         public bool Resuelta { get; set; }
     }
 }

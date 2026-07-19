@@ -10,3 +10,9 @@ D:\Users\carlos\Documents\GitHub\ForoProgramacion\TechForo.Models\obj\Debug\Tech
 D:\Users\carlos\Documents\GitHub\ForoProgramacion\TechForo.Models\obj\Debug\TechForo.Models.csproj.CoreCompileInputs.cache
 D:\Users\carlos\Documents\GitHub\ForoProgramacion\TechForo.Models\obj\Debug\TechForo.Models.dll
 D:\Users\carlos\Documents\GitHub\ForoProgramacion\TechForo.Models\obj\Debug\TechForo.Models.pdb
+C:\Users\Christian\source\repos\ForoProgramacion\TechForo.Models\bin\Debug\TechForo.Models.dll
+C:\Users\Christian\source\repos\ForoProgramacion\TechForo.Models\bin\Debug\TechForo.Models.pdb
+C:\Users\Christian\source\repos\ForoProgramacion\TechForo.Models\obj\Debug\TechForo.Models.csproj.AssemblyReference.cache
+C:\Users\Christian\source\repos\ForoProgramacion\TechForo.Models\obj\Debug\TechForo.Models.csproj.CoreCompileInputs.cache
+C:\Users\Christian\source\repos\ForoProgramacion\TechForo.Models\obj\Debug\TechForo.Models.dll
+C:\Users\Christian\source\repos\ForoProgramacion\TechForo.Models\obj\Debug\TechForo.Models.pdb

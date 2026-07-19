@@ -1,6 +1,6 @@
 <Solution>
   <Folder Name="/DataBase/">
-    <File Path="Script_BD_TechForum.sql" />
+    <File Path="../../../Downloads/ForoProgramacion-main(4)(1)/ForoProgramacion-main/Script_BD_TechForum.sql" />
   </Folder>
   <Project Path="TechForo.Core/TechForo.Core.csproj" Id="9d117db0-3145-41cf-9104-3e937b9165d9" />
   <Project Path="TechForo.Data/TechForo.Data.csproj" Id="8e9a426c-70f3-4105-a25a-4c31bb7cefef" />

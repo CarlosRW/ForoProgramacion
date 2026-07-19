@@ -4,6 +4,7 @@ using System.Web;
 using System.Web.Mvc;
 using TechForo.Core.Business;
 using TechForo.Data.Entidades;
+using TechForo.Data.Repositorios;
 using TechForo.Models.Vista_de_modelos;
 
 namespace TechForo.MVC.Controllers
@@ -16,7 +17,7 @@ namespace TechForo.MVC.Controllers
         public RespuestasController()
         {
             _respuestaBusiness = new RespuestaBusiness();
-            _preguntaBusiness = new PreguntaBusiness();
+            _preguntaBusiness = new PreguntaBusiness(new PreguntaRepository());
         }
 
         [Authorize]

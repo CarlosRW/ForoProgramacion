@@ -1,37 +1,50 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Web;
 using System.Web.Mvc;
 using TechForo.Core.Business;
 using TechForo.Data.Entidades;
+using TechForo.Data.Repositorios;
 using TechForo.Models.Vista_de_modelos;
 
 namespace TechForo.MVC.Controllers
 {
+    // DP - MVC: este Controller recibe la petición HTTP y prepara el ViewModel;
+    // las reglas pertenecen a PreguntaBusiness y el SQL a PreguntaRepository.
+    // SOLID - SRP: aquí solo se coordina la navegación, ModelState, sesión y
+    // archivos enviados por el navegador.
     public class PreguntasController : Controller
     {
+        private const int MaximoImagenBytes = 5 * 1024 * 1024;
+
+        private static readonly HashSet<string> ExtensionesPermitidas =
+            new HashSet<string>(StringComparer.OrdinalIgnoreCase)
+            {
+                ".jpg", ".jpeg", ".png", ".gif", ".webp"
+            };
+
         private readonly PreguntaBusiness _preguntaBusiness;
         private readonly RespuestaBusiness _respuestaBusiness;
 
         public PreguntasController()
         {
-            _preguntaBusiness = new PreguntaBusiness();
+            _preguntaBusiness = new PreguntaBusiness(new PreguntaRepository());
             _respuestaBusiness = new RespuestaBusiness();
         }
 
-        public ActionResult Index()
+        public ActionResult Index(string buscar)
         {
-            var preguntas = _preguntaBusiness.ObtenerTodas();
-            return View(preguntas);
+            ViewBag.Buscar = buscar;
+            return View(_preguntaBusiness.Buscar(buscar));
         }
 
         public ActionResult Details(int? id)
         {
-            if (id == null)
+            if (id == null || id.Value <= 0)
                 return RedirectToAction("Index");
 
-            var pregunta = _preguntaBusiness.ObtenerPorId(id.Value);
+            Pregunta pregunta = _preguntaBusiness.ObtenerDetalle(id.Value);
 
             if (pregunta == null)
                 return HttpNotFound();
@@ -45,6 +58,9 @@ namespace TechForo.MVC.Controllers
                 Descripcion = pregunta.Descripcion,
                 Codigo = pregunta.Codigo,
                 ImagenUrl = pregunta.ImagenUrl,
+                Etiquetas = pregunta.Etiquetas,
+                TotalVistas = pregunta.TotalVistas,
+                Resuelta = pregunta.Resuelta,
                 FechaCreacion = pregunta.FechaCreacion,
                 UsuarioID = pregunta.UsuarioID,
                 UsuarioNombre = pregunta.UsuarioNombre,
@@ -90,20 +106,35 @@ namespace TechForo.MVC.Controllers
             if (!ModelState.IsValid)
                 return View(model);
 
-            int usuarioID = Convert.ToInt32(Session["UsuarioID"]);
+            string imagenUrl;
+            string mensajeError;
+
+            if (!IntentarGuardarImagen(imagen, out imagenUrl, out mensajeError))
+            {
+                ModelState.AddModelError("", mensajeError);
+                return View(model);
+            }
 
             Pregunta pregunta = new Pregunta
             {
                 Titulo = model.Titulo,
                 Descripcion = model.Descripcion,
                 Codigo = model.Codigo,
-                ImagenUrl = GuardarImagen(imagen),
-                UsuarioID = usuarioID
+                ImagenUrl = imagenUrl,
+                Etiquetas = model.Etiquetas,
+                Resuelta = false,
+                UsuarioID = Convert.ToInt32(Session["UsuarioID"])
             };
 
-            _preguntaBusiness.Crear(pregunta);
+            if (!_preguntaBusiness.Crear(pregunta, out mensajeError))
+            {
+                EliminarImagenLocal(imagenUrl);
+                ModelState.AddModelError("", mensajeError);
+                return View(model);
+            }
 
-            return RedirectToAction("Index");
+            TempData["MensajeExito"] = "Pregunta publicada correctamente.";
+            return RedirectToAction("Details", new { id = pregunta.PreguntaID });
         }
 
         [Authorize]
@@ -113,7 +144,7 @@ namespace TechForo.MVC.Controllers
             if (Session["UsuarioID"] == null)
                 return RedirectToAction("Login", "Account");
 
-            var pregunta = _preguntaBusiness.ObtenerPorId(id);
+            Pregunta pregunta = _preguntaBusiness.ObtenerPorId(id);
 
             if (pregunta == null)
                 return HttpNotFound();
@@ -121,7 +152,10 @@ namespace TechForo.MVC.Controllers
             int usuarioID = Convert.ToInt32(Session["UsuarioID"]);
 
             if (pregunta.UsuarioID != usuarioID)
+            {
+                TempData["MensajeError"] = "No tiene permiso para editar esta pregunta.";
                 return RedirectToAction("Index");
+            }
 
             PreguntaModel model = new PreguntaModel
             {
@@ -129,7 +163,9 @@ namespace TechForo.MVC.Controllers
                 Titulo = pregunta.Titulo,
                 Descripcion = pregunta.Descripcion,
                 Codigo = pregunta.Codigo,
-                ImagenUrl = pregunta.ImagenUrl
+                ImagenUrl = pregunta.ImagenUrl,
+                Etiquetas = pregunta.Etiquetas,
+                Resuelta = pregunta.Resuelta
             };
 
             return View(model);
@@ -143,10 +179,7 @@ namespace TechForo.MVC.Controllers
             if (Session["UsuarioID"] == null)
                 return RedirectToAction("Login", "Account");
 
-            if (!ModelState.IsValid)
-                return View(model);
-
-            var preguntaActual = _preguntaBusiness.ObtenerPorId(model.PreguntaID);
+            Pregunta preguntaActual = _preguntaBusiness.ObtenerPorId(model.PreguntaID);
 
             if (preguntaActual == null)
                 return HttpNotFound();
@@ -154,12 +187,28 @@ namespace TechForo.MVC.Controllers
             int usuarioID = Convert.ToInt32(Session["UsuarioID"]);
 
             if (preguntaActual.UsuarioID != usuarioID)
+            {
+                TempData["MensajeError"] = "No tiene permiso para editar esta pregunta.";
                 return RedirectToAction("Index");
+            }
 
-            string imagenUrl = preguntaActual.ImagenUrl;
+            model.ImagenUrl = preguntaActual.ImagenUrl;
 
-            if (imagen != null && imagen.ContentLength > 0)
-                imagenUrl = GuardarImagen(imagen);
+            if (!ModelState.IsValid)
+                return View(model);
+
+            string imagenUrlNueva;
+            string mensajeError;
+
+            if (!IntentarGuardarImagen(imagen, out imagenUrlNueva, out mensajeError))
+            {
+                ModelState.AddModelError("", mensajeError);
+                return View(model);
+            }
+
+            string imagenUrlFinal = string.IsNullOrEmpty(imagenUrlNueva)
+                ? preguntaActual.ImagenUrl
+                : imagenUrlNueva;
 
             Pregunta pregunta = new Pregunta
             {
@@ -167,13 +216,24 @@ namespace TechForo.MVC.Controllers
                 Titulo = model.Titulo,
                 Descripcion = model.Descripcion,
                 Codigo = model.Codigo,
-                ImagenUrl = imagenUrl,
+                ImagenUrl = imagenUrlFinal,
+                Etiquetas = model.Etiquetas,
+                Resuelta = model.Resuelta,
                 UsuarioID = usuarioID
             };
 
-            _preguntaBusiness.Actualizar(pregunta);
+            if (!_preguntaBusiness.Actualizar(pregunta, out mensajeError))
+            {
+                EliminarImagenLocal(imagenUrlNueva);
+                ModelState.AddModelError("", mensajeError);
+                return View(model);
+            }
 
-            return RedirectToAction("Index");
+            if (!string.IsNullOrEmpty(imagenUrlNueva))
+                EliminarImagenLocal(preguntaActual.ImagenUrl);
+
+            TempData["MensajeExito"] = "Pregunta actualizada correctamente.";
+            return RedirectToAction("Details", new { id = model.PreguntaID });
         }
 
         [Authorize]
@@ -184,37 +244,80 @@ namespace TechForo.MVC.Controllers
             if (Session["UsuarioID"] == null)
                 return RedirectToAction("Login", "Account");
 
-            var pregunta = _preguntaBusiness.ObtenerPorId(id);
+            Pregunta pregunta = _preguntaBusiness.ObtenerPorId(id);
 
             if (pregunta == null)
                 return HttpNotFound();
 
+            string mensajeError;
             int usuarioID = Convert.ToInt32(Session["UsuarioID"]);
 
-            if (pregunta.UsuarioID != usuarioID)
+            if (!_preguntaBusiness.Eliminar(id, usuarioID, out mensajeError))
+            {
+                TempData["MensajeError"] = mensajeError;
                 return RedirectToAction("Index");
+            }
 
-            _preguntaBusiness.Eliminar(id, usuarioID);
-
+            EliminarImagenLocal(pregunta.ImagenUrl);
+            TempData["MensajeExito"] = "Pregunta eliminada correctamente.";
             return RedirectToAction("Index");
         }
 
-        private string GuardarImagen(HttpPostedFileBase imagen)
+        private bool IntentarGuardarImagen(
+            HttpPostedFileBase imagen,
+            out string imagenUrl,
+            out string mensajeError)
         {
+            imagenUrl = null;
+            mensajeError = string.Empty;
+
             if (imagen == null || imagen.ContentLength == 0)
-                return "";
+                return true;
+
+            if (imagen.ContentLength > MaximoImagenBytes)
+            {
+                mensajeError = "La imagen no puede superar los 5 MB.";
+                return false;
+            }
+
+            string extension = Path.GetExtension(imagen.FileName);
+
+            if (string.IsNullOrEmpty(extension) || !ExtensionesPermitidas.Contains(extension))
+            {
+                mensajeError = "Solo se permiten imágenes JPG, JPEG, PNG, GIF o WEBP.";
+                return false;
+            }
+
+            if (string.IsNullOrWhiteSpace(imagen.ContentType) ||
+                !imagen.ContentType.StartsWith("image/", StringComparison.OrdinalIgnoreCase))
+            {
+                mensajeError = "El archivo seleccionado no es una imagen válida.";
+                return false;
+            }
 
             string carpeta = Server.MapPath("~/Uploads/Preguntas/");
 
             if (!Directory.Exists(carpeta))
                 Directory.CreateDirectory(carpeta);
 
-            string nombreArchivo = Guid.NewGuid().ToString() + Path.GetExtension(imagen.FileName);
+            string nombreArchivo = Guid.NewGuid().ToString("N") + extension.ToLowerInvariant();
             string rutaCompleta = Path.Combine(carpeta, nombreArchivo);
 
             imagen.SaveAs(rutaCompleta);
+            imagenUrl = "/Uploads/Preguntas/" + nombreArchivo;
+            return true;
+        }
 
-            return "/Uploads/Preguntas/" + nombreArchivo;
+        private void EliminarImagenLocal(string imagenUrl)
+        {
+            if (string.IsNullOrWhiteSpace(imagenUrl) ||
+                !imagenUrl.StartsWith("/Uploads/Preguntas/", StringComparison.OrdinalIgnoreCase))
+                return;
+
+            string rutaFisica = Server.MapPath("~" + imagenUrl);
+
+            if (System.IO.File.Exists(rutaFisica))
+                System.IO.File.Delete(rutaFisica);
         }
     }
 }

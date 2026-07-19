@@ -4,6 +4,7 @@ using System.Linq;
 using System.Web.Mvc;
 using TechForo.Core.Business;
 using TechForo.Data.Entidades;
+using TechForo.Data.Repositorios;
 using TechForo.Models.Vista_de_modelos;
 
 namespace TechForo.MVC.Controllers
@@ -11,24 +12,22 @@ namespace TechForo.MVC.Controllers
     public class HomeController : Controller
     {
         private readonly PreguntaBusiness _preguntaBusiness;
-        private readonly RespuestaBusiness _respuestaBusiness;
 
         public HomeController()
         {
-            _preguntaBusiness = new PreguntaBusiness();
-            _respuestaBusiness = new RespuestaBusiness();
+            _preguntaBusiness = new PreguntaBusiness(new PreguntaRepository());
         }
 
-        // Avance 3: landing page conectada a datos reales. Etiquetas/TotalVistas/
-        // Resuelta ya existen como columnas en Preguntas, pero todavia nadie las
-        // escribe (eso lo agrega Isaac en el formulario de Crear/Editar pregunta),
-        // asi que por ahora van a aparecer vacias/en 0/false para preguntas creadas
-        public ActionResult Index()
+        // Landing conectada a datos reales de Preguntas. La búsqueda y el
+        // resumen se coordinan por medio de PreguntaBusiness.
+        public ActionResult Index(string buscar)
         {
-            List<Pregunta> preguntas = _preguntaBusiness.ObtenerTodas();
+            List<Pregunta> preguntas = _preguntaBusiness.Buscar(buscar);
             List<PreguntaResumenViewModel> modelo = preguntas
                 .Select(MapearResumen)
                 .ToList();
+
+            ViewBag.Buscar = buscar;
 
             return View(modelo);
         }
@@ -45,8 +44,8 @@ namespace TechForo.MVC.Controllers
             return View();
         }
 
-        // DP: Factory Method - centraliza como se arma una tarjeta de la landing
-        // a partir de una Pregunta real, en vez de repetir este mapeo en Index.
+        // SOLID - SRP: el mapeo de la entidad al ViewModel se mantiene separado
+        // de la acción HTTP y se reutiliza para cada tarjeta de la lista.
         private PreguntaResumenViewModel MapearResumen(Pregunta pregunta)
         {
             return new PreguntaResumenViewModel
@@ -59,7 +58,7 @@ namespace TechForo.MVC.Controllers
                 Etiquetas = string.IsNullOrWhiteSpace(pregunta.Etiquetas)
                     ? new List<string>()
                     : pregunta.Etiquetas.Split(',').Select(e => e.Trim()).ToList(),
-                TotalRespuestas = _respuestaBusiness.ObtenerPorPregunta(pregunta.PreguntaID).Count,
+                TotalRespuestas = pregunta.TotalRespuestas,
                 TotalVistas = pregunta.TotalVistas,
                 Resuelta = pregunta.Resuelta,
                 FechaCreacion = pregunta.FechaCreacion

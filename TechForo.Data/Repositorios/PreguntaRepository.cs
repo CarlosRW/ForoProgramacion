@@ -6,7 +6,9 @@ using TechForo.Data.Entidades;
 
 namespace TechForo.Data.Repositorios
 {
-    public class PreguntaRepository
+    // DP - Repository Pattern: esta clase concentra exclusivamente el acceso
+    // a SQL Server de la entidad Pregunta.
+    public class PreguntaRepository : IPreguntaRepository
     {
         public List<Pregunta> ObtenerTodas()
         {
@@ -16,7 +18,9 @@ namespace TechForo.Data.Repositorios
             {
                 string query = @"SELECT P.PreguntaID, P.Titulo, P.Descripcion, P.Codigo, P.ImagenUrl,
                     P.FechaCreacion, P.UsuarioID, U.Nombre AS UsuarioNombre,
-                    P.Etiquetas, P.TotalVistas, P.Resuelta
+                    P.Etiquetas, P.TotalVistas, P.Resuelta,
+                    (SELECT COUNT(1) FROM Respuestas R
+                     WHERE R.PreguntaID = P.PreguntaID) AS TotalRespuestas
                     FROM Preguntas P
                     INNER JOIN Usuarios U ON P.UsuarioID = U.UsuarioID
                     ORDER BY P.FechaCreacion DESC";
@@ -46,7 +50,9 @@ namespace TechForo.Data.Repositorios
             {
                 string query = @"SELECT P.PreguntaID, P.Titulo, P.Descripcion, P.Codigo, P.ImagenUrl,
                     P.FechaCreacion, P.UsuarioID, U.Nombre AS UsuarioNombre,
-                    P.Etiquetas, P.TotalVistas, P.Resuelta
+                    P.Etiquetas, P.TotalVistas, P.Resuelta,
+                    (SELECT COUNT(1) FROM Respuestas R
+                     WHERE R.PreguntaID = P.PreguntaID) AS TotalRespuestas
                     FROM Preguntas P
                     INNER JOIN Usuarios U ON P.UsuarioID = U.UsuarioID
                     WHERE P.PreguntaID = @PreguntaID";
@@ -69,12 +75,15 @@ namespace TechForo.Data.Repositorios
             return pregunta;
         }
 
-        public void Crear(Pregunta pregunta)
+        public int Crear(Pregunta pregunta)
         {
             using (SqlConnection conexion = ConexionDB.ObtenerConexion())
             {
-                string query = @"INSERT INTO Preguntas (Titulo, Descripcion, Codigo, ImagenUrl, UsuarioID)
-                                VALUES (@Titulo, @Descripcion, @Codigo, @ImagenUrl, @UsuarioID)";
+                string query = @"INSERT INTO Preguntas
+                                (Titulo, Descripcion, Codigo, ImagenUrl, UsuarioID, Etiquetas, Resuelta)
+                                VALUES
+                                (@Titulo, @Descripcion, @Codigo, @ImagenUrl, @UsuarioID, @Etiquetas, @Resuelta);
+                                SELECT CAST(SCOPE_IDENTITY() AS INT);";
 
                 using (SqlCommand comando = new SqlCommand(query, conexion))
                 {
@@ -83,14 +92,16 @@ namespace TechForo.Data.Repositorios
                     comando.Parameters.AddWithValue("@Codigo", (object)pregunta.Codigo ?? DBNull.Value);
                     comando.Parameters.AddWithValue("@ImagenUrl", (object)pregunta.ImagenUrl ?? DBNull.Value);
                     comando.Parameters.AddWithValue("@UsuarioID", pregunta.UsuarioID);
+                    comando.Parameters.AddWithValue("@Etiquetas", (object)pregunta.Etiquetas ?? DBNull.Value);
+                    comando.Parameters.AddWithValue("@Resuelta", pregunta.Resuelta);
 
                     conexion.Open();
-                    comando.ExecuteNonQuery();
+                    return Convert.ToInt32(comando.ExecuteScalar());
                 }
             }
         }
 
-        public void Actualizar(Pregunta pregunta)
+        public bool Actualizar(Pregunta pregunta)
         {
             using (SqlConnection conexion = ConexionDB.ObtenerConexion())
             {
@@ -98,7 +109,9 @@ namespace TechForo.Data.Repositorios
                                 SET Titulo = @Titulo,
                                     Descripcion = @Descripcion,
                                     Codigo = @Codigo,
-                                    ImagenUrl = @ImagenUrl
+                                    ImagenUrl = @ImagenUrl,
+                                    Etiquetas = @Etiquetas,
+                                    Resuelta = @Resuelta
                                 WHERE PreguntaID = @PreguntaID AND UsuarioID = @UsuarioID";
 
                 using (SqlCommand comando = new SqlCommand(query, conexion))
@@ -109,14 +122,16 @@ namespace TechForo.Data.Repositorios
                     comando.Parameters.AddWithValue("@Codigo", (object)pregunta.Codigo ?? DBNull.Value);
                     comando.Parameters.AddWithValue("@ImagenUrl", (object)pregunta.ImagenUrl ?? DBNull.Value);
                     comando.Parameters.AddWithValue("@UsuarioID", pregunta.UsuarioID);
+                    comando.Parameters.AddWithValue("@Etiquetas", (object)pregunta.Etiquetas ?? DBNull.Value);
+                    comando.Parameters.AddWithValue("@Resuelta", pregunta.Resuelta);
 
                     conexion.Open();
-                    comando.ExecuteNonQuery();
+                    return comando.ExecuteNonQuery() > 0;
                 }
             }
         }
 
-        public void Eliminar(int preguntaID, int usuarioID)
+        public bool Eliminar(int preguntaID, int usuarioID)
         {
             using (SqlConnection conexion = ConexionDB.ObtenerConexion())
             {
@@ -126,6 +141,25 @@ namespace TechForo.Data.Repositorios
                 {
                     try
                     {
+                        // Se valida el propietario dentro de la misma transacción.
+                        // Así nunca se borran respuestas de una pregunta ajena.
+                        string queryPropietario = @"SELECT COUNT(1)
+                                                   FROM Preguntas
+                                                   WHERE PreguntaID = @PreguntaID
+                                                   AND UsuarioID = @UsuarioID";
+
+                        using (SqlCommand comandoPropietario = new SqlCommand(queryPropietario, conexion, transaccion))
+                        {
+                            comandoPropietario.Parameters.AddWithValue("@PreguntaID", preguntaID);
+                            comandoPropietario.Parameters.AddWithValue("@UsuarioID", usuarioID);
+
+                            if (Convert.ToInt32(comandoPropietario.ExecuteScalar()) == 0)
+                            {
+                                transaccion.Commit();
+                                return false;
+                            }
+                        }
+
                         string queryRespuestas = @"DELETE FROM Respuestas
                                                    WHERE PreguntaID = @PreguntaID";
 
@@ -139,14 +173,17 @@ namespace TechForo.Data.Repositorios
                                                  WHERE PreguntaID = @PreguntaID
                                                  AND UsuarioID = @UsuarioID";
 
+                        int filasAfectadas;
+
                         using (SqlCommand comandoPregunta = new SqlCommand(queryPregunta, conexion, transaccion))
                         {
                             comandoPregunta.Parameters.AddWithValue("@PreguntaID", preguntaID);
                             comandoPregunta.Parameters.AddWithValue("@UsuarioID", usuarioID);
-                            comandoPregunta.ExecuteNonQuery();
+                            filasAfectadas = comandoPregunta.ExecuteNonQuery();
                         }
 
                         transaccion.Commit();
+                        return filasAfectadas > 0;
                     }
                     catch
                     {
@@ -157,6 +194,25 @@ namespace TechForo.Data.Repositorios
             }
         }
 
+        public bool IncrementarVistas(int preguntaID)
+        {
+            using (SqlConnection conexion = ConexionDB.ObtenerConexion())
+            {
+                string query = @"UPDATE Preguntas
+                                 SET TotalVistas = TotalVistas + 1
+                                 WHERE PreguntaID = @PreguntaID";
+
+                using (SqlCommand comando = new SqlCommand(query, conexion))
+                {
+                    comando.Parameters.AddWithValue("@PreguntaID", preguntaID);
+                    conexion.Open();
+                    return comando.ExecuteNonQuery() > 0;
+                }
+            }
+        }
+
+        // DP - Data Mapper: convierte una fila de SQL en una entidad Pregunta
+        // en un único lugar, evitando repetir el mapeo en cada consulta.
         private Pregunta MapearPregunta(SqlDataReader lector)
         {
             return new Pregunta
@@ -171,6 +227,7 @@ namespace TechForo.Data.Repositorios
                 UsuarioNombre = lector["UsuarioNombre"].ToString(),
                 Etiquetas = lector["Etiquetas"] == DBNull.Value ? "" : lector["Etiquetas"].ToString(),
                 TotalVistas = Convert.ToInt32(lector["TotalVistas"]),
+                TotalRespuestas = Convert.ToInt32(lector["TotalRespuestas"]),
                 Resuelta = Convert.ToBoolean(lector["Resuelta"])
             };
         }

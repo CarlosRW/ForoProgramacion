@@ -9,6 +9,7 @@
 @using (Html.BeginForm("Edit", "Preguntas", FormMethod.Post, new { enctype = "multipart/form-data" }))
 {
     @Html.AntiForgeryToken()
+    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
     @Html.HiddenFor(model => model.PreguntaID)
     @Html.HiddenFor(model => model.ImagenUrl)
 
@@ -27,6 +28,18 @@
     <div class="mb-3">
         @Html.LabelFor(model => model.Codigo, new { @class = "form-label" })
         @Html.TextAreaFor(model => model.Codigo, new { @class = "form-control", rows = 8 })
+    </div>
+
+    <div class="mb-3">
+        @Html.LabelFor(model => model.Etiquetas, new { @class = "form-label" })
+        @Html.TextBoxFor(model => model.Etiquetas, new { @class = "form-control", maxlength = "300", placeholder = "Ejemplo: c#, sql-server, mvc" })
+        <div class="form-text">Separá las etiquetas con comas.</div>
+        @Html.ValidationMessageFor(model => model.Etiquetas, "", new { @class = "text-danger" })
+    </div>
+
+    <div class="form-check mb-3">
+        @Html.CheckBoxFor(model => model.Resuelta, new { @class = "form-check-input" })
+        @Html.LabelFor(model => model.Resuelta, new { @class = "form-check-label" })
     </div>
 
     if (!string.IsNullOrEmpty(Model.ImagenUrl))

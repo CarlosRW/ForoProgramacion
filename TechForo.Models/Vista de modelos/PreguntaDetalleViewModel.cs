@@ -13,6 +13,9 @@ namespace TechForo.Models.Vista_de_modelos
         public string Descripcion { get; set; }
         public string Codigo { get; set; }
         public string ImagenUrl { get; set; }
+        public string Etiquetas { get; set; }
+        public int TotalVistas { get; set; }
+        public bool Resuelta { get; set; }
         public DateTime FechaCreacion { get; set; }
         public int UsuarioID { get; set; }
         public string UsuarioNombre { get; set; }

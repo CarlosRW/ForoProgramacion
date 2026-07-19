@@ -5,6 +5,11 @@
 }
 
 <div class="detalle-contenedor">
+    @if (TempData["MensajeExito"] != null)
+    {
+        <div class="alert alert-success">@TempData["MensajeExito"]</div>
+    }
+
     <div class="card pregunta-detalle-card mb-4">
         <div class="card-body">
             <h2 class="pregunta-titulo">@Model.Titulo</h2>
@@ -25,7 +30,23 @@
 
             <p class="pregunta-info">
                 Publicado por @Model.UsuarioNombre - @Model.FechaCreacion.ToString("dd/MM/yyyy")
+                · @Model.TotalVistas vista(s)
             </p>
+
+            @if (!string.IsNullOrWhiteSpace(Model.Etiquetas))
+            {
+                <div class="mb-3">
+                    @foreach (string etiqueta in Model.Etiquetas.Split(','))
+                    {
+                        <span class="ds-tag">@etiqueta.Trim()</span>
+                    }
+                </div>
+            }
+
+            @if (Model.Resuelta)
+            {
+                <span class="ds-badge-resuelta">✓ pregunta resuelta</span>
+            }
 
             @Html.ActionLink("Volver", "Index", "Preguntas", null, new { @class = "btn btn-secondary btn-sm" })
 
