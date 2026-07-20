@@ -7,6 +7,12 @@ namespace TechForo.Models.Vista_de_modelos
         [Display(Name = "Modo oscuro")]
         public bool ModoOscuro { get; set; }
 
+        [Display(Name = "Tamaño de fuente")]
+        public string TamanoFuente { get; set; } = "Mediano";
+
+        [Display(Name = "Idioma")]
+        public string Idioma { get; set; } = "Español";
+
         [Display(Name = "Mostrar imágenes")]
         public bool MostrarImagenes { get; set; } = true;
 

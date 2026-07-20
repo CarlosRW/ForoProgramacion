@@ -97,7 +97,7 @@ a {
 .ds-hero {
     border: 1px solid var(--ds-border);
     border-radius: var(--ds-radius);
-    background: linear-gradient(180deg, #161b22 0%, #0d1117 100%);
+    background: var(--ds-bg-secondary);
     padding: 2.25rem 2rem;
     margin-bottom: 1.5rem;
 }
@@ -397,4 +397,55 @@ footer.ds-footer {
         gap: .75rem;
         min-width: 0;
     }
+}
+
+body.light-theme {
+    --ds-bg-canvas: #f5f5f5;
+    --ds-bg-secondary: #ffffff;
+    --ds-bg-tertiary: #f1f3f5;
+    --ds-border: #d0d7de;
+    --ds-border-muted: #e5e7eb;
+    --ds-text: #24292f;
+    --ds-text-muted: #57606a;
+    --ds-accent: #0969da;
+    --ds-accent-emphasis: #0550ae;
+    --ds-success: #1a7f37;
+    --ds-success-emphasis: #116329;
+}
+
+body.font-small {
+    font-size: 14px;
+}
+
+body.font-medium {
+    font-size: 16px;
+}
+
+body.font-large {
+    font-size: 19px;
+}
+
+body.light-theme .ds-card,
+body.light-theme .ds-form-section,
+body.light-theme .ds-profile-card,
+body.light-theme .ds-question-list,
+body.light-theme .ds-question-item,
+body.light-theme .ds-hero {
+    background: white;
+    color: #212529;
+    border-color: #d0d7de;
+}
+
+body.light-theme h1,
+body.light-theme h2,
+body.light-theme h3,
+body.light-theme h4,
+body.light-theme h5 {
+    color: #212529;
+}
+
+body.light-theme p,
+body.light-theme label,
+body.light-theme span {
+    color: #495057;
 }
