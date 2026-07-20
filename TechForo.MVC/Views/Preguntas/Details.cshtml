@@ -1,231 +1,166 @@
 @model TechForo.Models.Vista_de_modelos.PreguntaDetalleViewModel
-
 @{
-    ViewBag.Title = "Detalle de Pregunta";
+    ViewBag.Title = Model.Titulo;
 }
 
-<div class="detalle-contenedor">
-    @if (TempData["MensajeExito"] != null)
-    {
-        <div class="alert alert-success">@TempData["MensajeExito"]</div>
-    }
+@if (TempData["MensajeExito"] != null)
+{<div class="ds-alert-success">@TempData["MensajeExito"]</div>}
 
-    <div class="card pregunta-detalle-card mb-4">
-        <div class="card-body">
-            <h2 class="pregunta-titulo">@Model.Titulo</h2>
-
-            <p class="pregunta-descripcion">@Model.Descripcion</p>
-
-            @if (!string.IsNullOrEmpty(Model.Codigo))
-            {
-                <pre class="pregunta-codigo"><code>@Model.Codigo</code></pre>
-            }
-
-            @if (!string.IsNullOrEmpty(Model.ImagenUrl))
-            {
-                <div class="pregunta-imagen">
-                    <img src="@Model.ImagenUrl" class="img-fluid rounded" />
-                </div>
-            }
-
-            <p class="pregunta-info">
-                Publicado por @Model.UsuarioNombre - @Model.FechaCreacion.ToString("dd/MM/yyyy")
-                · @Model.TotalVistas vista(s)
-            </p>
-
-            @if (!string.IsNullOrWhiteSpace(Model.Etiquetas))
-            {
-                <div class="mb-3">
-                    @foreach (string etiqueta in Model.Etiquetas.Split(','))
-                    {
-                        <span class="ds-tag">@etiqueta.Trim()</span>
-                    }
-                </div>
-            }
-
-            @if (Model.Resuelta)
-            {
-                <span class="ds-badge-resuelta">✓ pregunta resuelta</span>
-            }
-
-            @Html.ActionLink("Volver", "Index", "Preguntas", null, new { @class = "btn btn-secondary btn-sm" })
-
-            @if (Session["UsuarioID"] != null && Model.UsuarioID == Convert.ToInt32(Session["UsuarioID"]))
-            {
-                @Html.ActionLink("Editar", "Edit", "Preguntas", new { id = Model.PreguntaID }, new { @class = "btn btn-warning btn-sm ms-2" })
-            }
-        </div>
+<!-- Cabecera de la pregunta -->
+<div class="ds-card mb-4">
+    <div class="d-flex align-items-start justify-content-between gap-2 mb-2">
+        <h2 style="color:var(--ds-text);font-size:1.3rem;font-weight:700;margin:0">@Model.Titulo</h2>
+        @if (Model.Resuelta)
+        {
+            <span class="ds-badge-resuelta" style="white-space:nowrap">✓ resuelta</span>
+        }
     </div>
 
-    <h3 class="text-light mb-3">Respuestas</h3>
+    <div class="ds-question-meta mb-3">
+        <span class="ds-avatar ds-avatar-sm">
+            @(string.IsNullOrWhiteSpace(Model.UsuarioNombre) ? "?" : Model.UsuarioNombre.Substring(0,1).ToUpper())
+        </span>
+        <span>@Model.UsuarioNombre</span>
+        <span>·</span>
+        <span>@Model.FechaCreacion.ToString("dd MMM yyyy, HH:mm")</span>
+        <span>·</span>
+        <span>@Model.TotalVistas vista(s)</span>
+    </div>
 
-    @if (Model.Respuestas == null || Model.Respuestas.Count == 0)
+    @if (!string.IsNullOrWhiteSpace(Model.Etiquetas))
     {
-        <div class="alert alert-secondary">
-            Esta pregunta todavía no tiene respuestas.
+        <div class="mb-3">
+            @foreach (string etiqueta in Model.Etiquetas.Split(','))
+            {
+                <span class="ds-tag">@etiqueta.Trim()</span>
+            }
         </div>
     }
-    else
+
+    <p style="color:var(--ds-text);white-space:pre-wrap">@Model.Descripcion</p>
+
+    @if (!string.IsNullOrEmpty(Model.Codigo))
     {
-        foreach (var respuesta in Model.Respuestas)
+        <pre class="ds-code-block mt-3"><code>@Model.Codigo</code></pre>
+    }
+
+    @if (!string.IsNullOrEmpty(Model.ImagenUrl))
+    {
+        <div class="text-center mt-3">
+            <img src="@Model.ImagenUrl" class="ds-img-preview" />
+        </div>
+    }
+
+    <div class="d-flex gap-2 mt-3">
+        @Html.ActionLink("← Volver", "Index", "Preguntas", null, new { @class = "btn btn-ds-outline btn-sm" })
+        @if (Session["UsuarioID"] != null && Model.UsuarioID == Convert.ToInt32(Session["UsuarioID"]))
         {
-            <div class="card respuesta-card mb-3">
-                <div class="card-body">
-                    @if (!string.IsNullOrEmpty(respuesta.Contenido))
-                    {
-                        <p class="respuesta-contenido">@respuesta.Contenido</p>
-                    }
-
-                    @if (!string.IsNullOrEmpty(respuesta.Codigo))
-                    {
-                        <pre class="respuesta-codigo"><code>@respuesta.Codigo</code></pre>
-                    }
-
-                    @if (!string.IsNullOrEmpty(respuesta.ImagenUrl))
-                    {
-                        <div class="respuesta-imagen">
-                            <img src="@respuesta.ImagenUrl" class="img-fluid rounded" />
-                        </div>
-                    }
-
-                    <p class="respuesta-info">
-                        Respondido por @respuesta.UsuarioNombre - @respuesta.FechaCreacion.ToString("dd/MM/yyyy HH:mm")
-                    </p>
-
-                    @if (Session["UsuarioID"] != null && respuesta.UsuarioID == Convert.ToInt32(Session["UsuarioID"]))
-                    {
-                        @Html.ActionLink("Editar", "Edit", "Respuestas", new { id = respuesta.RespuestaID }, new { @class = "btn btn-warning btn-sm me-2" })
-
-                        using (Html.BeginForm("Delete", "Respuestas", new { id = respuesta.RespuestaID }, FormMethod.Post, new { style = "display:inline;" }))
-                        {
-                            @Html.AntiForgeryToken()
-
-                            <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('¿Seguro que desea eliminar esta respuesta?');">
-                                Eliminar
-                            </button>
-                        }
-                    }
-                </div>
-            </div>
+            @Html.ActionLink("Editar", "Edit", "Preguntas", new { id = Model.PreguntaID }, new { @class = "btn btn-ds-outline btn-sm" })
         }
-    }
-
-    <div class="card respuesta-form-card mt-4">
-        <div class="card-body">
-            <h4 class="form-titulo">Añadir respuesta</h4>
-
-            @if (Request.IsAuthenticated)
-            {
-                if (TempData["ErrorRespuesta"] != null)
-                {
-                    <div class="alert alert-danger">
-                        @TempData["ErrorRespuesta"]
-                    </div>
-                }
-
-                using (Html.BeginForm("Create", "Respuestas", FormMethod.Post, new { enctype = "multipart/form-data" }))
-                {
-                    @Html.AntiForgeryToken()
-
-                    <input type="hidden" name="PreguntaID" value="@Model.PreguntaID" />
-
-                    <div class="mb-3">
-                        <label class="form-label">Respuesta</label>
-                        <textarea name="Contenido" class="form-control" rows="5" placeholder="Escriba aquí su respuesta."></textarea>
-                    </div>
-
-                    <div class="mb-3">
-                        <label class="form-label">Bloque de código</label>
-                        <textarea name="Codigo" class="form-control codigo-textarea" rows="7" placeholder="Pegue aquí código si es necesario."></textarea>
-                    </div>
-
-                    <div class="mb-3">
-                        <label class="form-label">Imagen o captura</label>
-                        <input type="file" name="imagen" class="form-control" accept="image/*" />
-                    </div>
-
-                    <button type="submit" class="btn btn-primary">
-                        Publicar respuesta
-                    </button>
-                }
-            }
-            else
-            {
-                <p class="text-light">
-                    Debe iniciar sesión para responder esta pregunta.
-                </p>
-
-                @Html.ActionLink("Iniciar sesión", "Login", "Account", null, new { @class = "btn btn-primary" })
-            }
-        </div>
     </div>
 </div>
 
-<style>
-    .detalle-contenedor {
-        margin-top: 20px;
-    }
+<!-- Respuestas  -->
+<h4 style="color:var(--ds-text-muted);font-size:.85rem;text-transform:uppercase;letter-spacing:.06em" class="mb-3">
+    @(Model.Respuestas?.Count ?? 0) respuesta(s)
+</h4>
 
-    .pregunta-detalle-card,
-    .respuesta-card,
-    .respuesta-form-card {
-        background-color: #111827;
-        border: 1px solid #334155;
-        color: #e5e7eb;
-        border-radius: 10px;
-    }
+@if (Model.Respuestas == null || Model.Respuestas.Count == 0)
+{
+    <div class="ds-alert-info mb-4">Esta pregunta todavía no tiene respuestas. ¡Sé el primero!</div>
+}
+else
+{
+    foreach (var respuesta in Model.Respuestas)
+    {
+        <div class="ds-card mb-3">
+            <div class="ds-question-meta mb-2">
+                <span class="ds-avatar ds-avatar-sm">
+                    @(string.IsNullOrWhiteSpace(respuesta.UsuarioNombre) ? "?" : respuesta.UsuarioNombre.Substring(0,1).ToUpper())
+                </span>
+                <span>@respuesta.UsuarioNombre</span>
+                <span>·</span>
+                <span>@respuesta.FechaCreacion.ToString("dd MMM yyyy, HH:mm")</span>
+            </div>
 
-    .pregunta-titulo {
-        color: #f8fafc;
-        font-weight: bold;
-        margin-bottom: 10px;
-    }
+            @if (!string.IsNullOrEmpty(respuesta.Contenido))
+            {
+                <p style="color:var(--ds-text);white-space:pre-wrap">@respuesta.Contenido</p>
+            }
 
-    .pregunta-descripcion,
-    .respuesta-contenido {
-        color: #d1d5db;
-        font-size: 16px;
-        white-space: pre-wrap;
-    }
+            @if (!string.IsNullOrEmpty(respuesta.Codigo))
+            {
+                <pre class="ds-code-block mt-2"><code>@respuesta.Codigo</code></pre>
+            }
 
-    .pregunta-codigo,
-    .respuesta-codigo {
-        background-color: #020617;
-        color: #e2e8f0;
-        border: 1px solid #475569;
-        border-radius: 8px;
-        padding: 15px;
-        margin-top: 15px;
-        margin-bottom: 15px;
-        white-space: pre-wrap;
-    }
+            @if (!string.IsNullOrEmpty(respuesta.ImagenUrl))
+            {
+                <div class="text-center mt-2">
+                    <img src="@respuesta.ImagenUrl" class="ds-img-preview" />
+                </div>
+            }
 
-    .pregunta-imagen,
-    .respuesta-imagen {
-        text-align: center;
-        margin-top: 15px;
-        margin-bottom: 15px;
+            @if (Session["UsuarioID"] != null && respuesta.UsuarioID == Convert.ToInt32(Session["UsuarioID"]))
+            {
+                <div class="d-flex gap-2 mt-3">
+                    @Html.ActionLink("Editar", "Edit", "Respuestas", new { id = respuesta.RespuestaID }, new { @class = "btn btn-ds-outline btn-sm" })
+                    using (Html.BeginForm("Delete", "Respuestas", new { id = respuesta.RespuestaID }, FormMethod.Post, new { style = "display:inline;" }))
+                    {
+                    @Html.AntiForgeryToken()
+                    <button type="submit" class="btn btn-ds-danger btn-sm"
+                            onclick="return confirm('¿Eliminar esta respuesta?');">
+                        Eliminar
+                    </button>
+                    }
+                </div>
+            }
+        </div>
     }
+}
 
-        .pregunta-imagen img,
-        .respuesta-imagen img {
-            max-width: 450px;
-            max-height: 450px;
-            object-fit: contain;
+<!-- Formulario nueva respuesta -->
+<div class="ds-card mt-4">
+    <h5 style="color:var(--ds-text-muted);font-size:.8rem;text-transform:uppercase;letter-spacing:.06em" class="mb-3">
+        Añadir respuesta
+    </h5>
+
+    @if (Request.IsAuthenticated)
+    {
+        if (TempData["ErrorRespuesta"] != null)
+        {
+            <div class="ds-alert-danger">@TempData["ErrorRespuesta"]</div>
         }
 
-    .pregunta-info,
-    .respuesta-info {
-        color: #94a3b8;
-        margin-top: 15px;
-    }
+        using (Html.BeginForm("Create", "Respuestas", FormMethod.Post, new { enctype = "multipart/form-data" }))
+        {
+            @Html.AntiForgeryToken()
+            <input type="hidden" name="PreguntaID" value="@Model.PreguntaID" />
 
-    .form-titulo {
-        color: #f8fafc;
-        margin-bottom: 15px;
+            <div class="mb-3">
+                <label class="form-label" style="color:var(--ds-text);font-weight:600">Respuesta</label>
+                <textarea name="Contenido" class="form-control" rows="5"
+                          style="background:var(--ds-bg-canvas);border-color:var(--ds-border);color:var(--ds-text)"
+                          placeholder="Escribí tu respuesta aquí..."></textarea>
+            </div>
+            <div class="mb-3">
+                <label class="form-label" style="color:var(--ds-text);font-weight:600">Bloque de código (opcional)</label>
+                <textarea name="Codigo" class="ds-code-textarea form-control" rows="6"
+                          placeholder="Pegá aquí código si aplica..."></textarea>
+            </div>
+            <div class="mb-3">
+                <label class="form-label" style="color:var(--ds-text);font-weight:600">Imagen o captura (opcional)</label>
+                <input type="file" name="imagen" class="form-control"
+                       style="background:var(--ds-bg-canvas);border-color:var(--ds-border);color:var(--ds-text)"
+                       accept="image/*" />
+            </div>
+            <button type="submit" class="btn btn-ds-primary">Publicar respuesta</button>
+        }
     }
-
-    .codigo-textarea {
-        font-family: Consolas, monospace;
+    else
+    {
+        <p style="color:var(--ds-text-muted)">
+            Debés iniciar sesión para responder.
+            @Html.ActionLink("Iniciar sesión", "Login", "Account", null, new { @class = "btn btn-ds-primary btn-sm ms-2" })
+        </p>
     }
-</style>
+</div>
