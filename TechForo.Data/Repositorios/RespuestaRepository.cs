@@ -6,7 +6,9 @@ using TechForo.Data.Entidades;
 
 namespace TechForo.Data.Repositorios
 {
-    public class RespuestaRepository
+    // DP - Repository Pattern: esta clase concentra exclusivamente el acceso
+    // a SQL Server de la entidad Respuesta.
+    public class RespuestaRepository : IRespuestaRepository
     {
         public List<Respuesta> ObtenerPorPregunta(int preguntaID)
         {
@@ -136,6 +138,8 @@ namespace TechForo.Data.Repositorios
             }
         }
 
+        // DP - Data Mapper: convierte una fila de SQL en una entidad Respuesta
+        // en un unico lugar, evitando repetir el mapeo en cada consulta.
         private Respuesta MapearRespuesta(SqlDataReader lector)
         {
             return new Respuesta

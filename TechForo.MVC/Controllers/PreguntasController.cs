@@ -30,7 +30,7 @@ namespace TechForo.MVC.Controllers
         public PreguntasController()
         {
             _preguntaBusiness = new PreguntaBusiness(new PreguntaRepository());
-            _respuestaBusiness = new RespuestaBusiness();
+            _respuestaBusiness = new RespuestaBusiness(new RespuestaRepository());
         }
 
         public ActionResult Index(string buscar)

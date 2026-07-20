@@ -9,6 +9,10 @@ using TechForo.Models.Vista_de_modelos;
 
 namespace TechForo.MVC.Controllers
 {
+    // DP - MVC: este Controller recibe la peticion HTTP y delega las reglas de
+    // negocio a RespuestaBusiness.
+    // SOLID - SRP: aqui solo se coordinan sesion, navegacion, ModelState y los
+    // archivos enviados por el navegador.
     public class RespuestasController : Controller
     {
         private readonly RespuestaBusiness _respuestaBusiness;
@@ -16,7 +20,7 @@ namespace TechForo.MVC.Controllers
 
         public RespuestasController()
         {
-            _respuestaBusiness = new RespuestaBusiness();
+            _respuestaBusiness = new RespuestaBusiness(new RespuestaRepository());
             _preguntaBusiness = new PreguntaBusiness(new PreguntaRepository());
         }
 
@@ -33,16 +37,6 @@ namespace TechForo.MVC.Controllers
             if (pregunta == null)
                 return HttpNotFound();
 
-            bool tieneImagen = imagen != null && imagen.ContentLength > 0;
-
-            if (string.IsNullOrWhiteSpace(model.Contenido) &&
-                string.IsNullOrWhiteSpace(model.Codigo) &&
-                !tieneImagen)
-            {
-                TempData["ErrorRespuesta"] = "Debe escribir una respuesta, pegar un bloque de código o subir una imagen.";
-                return RedirectToAction("Details", "Preguntas", new { id = model.PreguntaID });
-            }
-
             int usuarioID = Convert.ToInt32(Session["UsuarioID"]);
 
             Respuesta respuesta = new Respuesta
@@ -54,7 +48,13 @@ namespace TechForo.MVC.Controllers
                 UsuarioID = usuarioID
             };
 
-            _respuestaBusiness.Crear(respuesta);
+            string mensajeError;
+
+            if (!_respuestaBusiness.Crear(respuesta, out mensajeError))
+            {
+                TempData["ErrorRespuesta"] = mensajeError;
+                return RedirectToAction("Details", "Preguntas", new { id = model.PreguntaID });
+            }
 
             return RedirectToAction("Details", "Preguntas", new { id = model.PreguntaID });
         }
@@ -112,24 +112,9 @@ namespace TechForo.MVC.Controllers
             if (respuestaActual.UsuarioID != usuarioID)
                 return RedirectToAction("Details", "Preguntas", new { id = respuestaActual.PreguntaID });
 
-            bool tieneImagenNueva = imagen != null && imagen.ContentLength > 0;
-
-            if (string.IsNullOrWhiteSpace(model.Contenido) &&
-                string.IsNullOrWhiteSpace(model.Codigo) &&
-                string.IsNullOrWhiteSpace(respuestaActual.ImagenUrl) &&
-                !tieneImagenNueva)
-            {
-                ModelState.AddModelError("", "Debe escribir una respuesta, pegar un bloque de código o subir una imagen.");
-
-                model.ImagenUrl = respuestaActual.ImagenUrl;
-                model.PreguntaID = respuestaActual.PreguntaID;
-
-                return View(model);
-            }
-
             string imagenUrl = respuestaActual.ImagenUrl;
 
-            if (tieneImagenNueva)
+            if (imagen != null && imagen.ContentLength > 0)
                 imagenUrl = GuardarImagen(imagen);
 
             Respuesta respuesta = new Respuesta
@@ -142,7 +127,17 @@ namespace TechForo.MVC.Controllers
                 UsuarioID = usuarioID
             };
 
-            _respuestaBusiness.Actualizar(respuesta);
+            string mensajeError;
+
+            if (!_respuestaBusiness.Actualizar(respuesta, out mensajeError))
+            {
+                ModelState.AddModelError("", mensajeError);
+
+                model.ImagenUrl = respuestaActual.ImagenUrl;
+                model.PreguntaID = respuestaActual.PreguntaID;
+
+                return View(model);
+            }
 
             return RedirectToAction("Details", "Preguntas", new { id = respuestaActual.PreguntaID });
         }
