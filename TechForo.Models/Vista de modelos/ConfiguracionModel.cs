@@ -22,4 +22,4 @@ namespace TechForo.Models.Vista_de_modelos
         [Display(Name = "Recibir notificaciones")]
         public bool Notificaciones { get; set; } = true;
     }
-}
+} 
