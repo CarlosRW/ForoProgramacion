@@ -8,8 +8,7 @@
     <h1>Preguntá. Compartí código. Resolvé bugs en equipo.</h1>
     <p>
         TechForum es un espacio para que desarrolladores publiquen dudas técnicas,
-        compartan bloques de código y construyan, entre todos, un historial de
-        soluciones.
+        compartan bloques de código y construyan, entre todos, un historial de soluciones.
     </p>
     @if (Request.IsAuthenticated)
     {
@@ -23,42 +22,55 @@
 </div>
 
 <div class="ds-toolbar">
-    <div class="ds-search">
-        <input type="search" class="form-control" placeholder="Buscar preguntas por título, etiqueta o autor..." disabled />
-    </div>
+    @using (Html.BeginForm("Index", "Home", FormMethod.Get, new { @class = "ds-search" }))
+    {
+        <input type="search" name="buscar" value="@ViewBag.Buscar"
+               class="form-control"
+               placeholder="Buscar preguntas por título, etiqueta o autor..." />
+        <button type="submit" class="btn btn-ds-outline">Buscar</button>
+    }
     <div class="text-muted-help">
-        @Model.Count() pregunta(s) · datos de ejemplo (Avance 2)
+        @Model.Count() pregunta(s) encontrada(s)
     </div>
 </div>
 
-<div class="ds-question-list">
-    @foreach (var pregunta in Model)
-    {
-        <div class="ds-question-item">
-            <div class="ds-question-stats @(pregunta.Resuelta ? "is-resuelta" : "")">
-                <strong>@pregunta.TotalRespuestas</strong>
-                <span>respuestas</span>
-            </div>
-            <div class="ds-question-body">
-                <a class="ds-question-title" href="#">@pregunta.Titulo</a>
-                <p class="ds-question-excerpt">@pregunta.Resumen</p>
-                <div class="ds-question-meta">
-                    <span class="ds-avatar ds-avatar-sm">@pregunta.AutorIniciales</span>
-                    <span>@pregunta.AutorNombre</span>
-                    <span>·</span>
-                    <span>@pregunta.TiempoTranscurrido</span>
-                    <span>·</span>
-                    <span>@pregunta.TotalVistas vistas</span>
-                    @if (pregunta.Resuelta)
-                    {
-                        <span class="ds-badge-resuelta">✓ resuelta</span>
-                    }
-                    @foreach (var etiqueta in pregunta.Etiquetas)
-                    {
-                        <span class="ds-tag">@etiqueta</span>
-                    }
+@if (!Model.Any())
+{
+    <div class="ds-alert-info">No se encontraron preguntas.</div>
+}
+else
+{
+    <div class="ds-question-list">
+        @foreach (var pregunta in Model)
+        {
+            <div class="ds-question-item">
+                <div class="ds-question-stats @(pregunta.Resuelta ? "is-resuelta" : "")">
+                    <strong>@pregunta.TotalRespuestas</strong>
+                    <span>resp.</span>
+                    <span>@pregunta.TotalVistas 👁</span>
+                </div>
+                <div class="ds-question-body">
+                    <a class="ds-question-title"
+                       href="@Url.Action("Details", "Preguntas", new { id = pregunta.PreguntaID })">
+                        @pregunta.Titulo
+                    </a>
+                    <p class="ds-question-excerpt">@pregunta.Resumen</p>
+                    <div class="ds-question-meta">
+                        <span class="ds-avatar ds-avatar-sm">@pregunta.AutorIniciales</span>
+                        <span>@pregunta.AutorNombre</span>
+                        <span>·</span>
+                        <span>@pregunta.TiempoTranscurrido</span>
+                        @if (pregunta.Resuelta)
+                        {
+                            <span class="ds-badge-resuelta">✓ resuelta</span>
+                        }
+                        @foreach (var etiqueta in pregunta.Etiquetas)
+                        {
+                            <span class="ds-tag">@etiqueta</span>
+                        }
+                    </div>
                 </div>
             </div>
-        </div>
-    }
-</div>
+        }
+    </div>
+}

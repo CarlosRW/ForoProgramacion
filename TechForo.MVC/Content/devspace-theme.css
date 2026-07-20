@@ -1,4 +1,7 @@
-﻿:root {
+﻿/* devspace-theme.css — TechForum */
+
+/* ===== Variables base (tema oscuro, default) ===== */
+:root {
     --ds-bg-canvas: #0d1117;
     --ds-bg-secondary: #161b22;
     --ds-bg-tertiary: #1c2128;
@@ -17,11 +20,40 @@
     --ds-font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
 }
 
+/* ===== Tema claro — redefine variables, todos los ds-* se adaptan solos ===== */
+body.light-theme {
+    --ds-bg-canvas: #ffffff;
+    --ds-bg-secondary: #f6f8fa;
+    --ds-bg-tertiary: #eaeef2;
+    --ds-border: #d0d7de;
+    --ds-border-muted: #e1e4e8;
+    --ds-text: #24292f;
+    --ds-text-muted: #57606a;
+    --ds-accent: #0969da;
+    --ds-accent-emphasis: #0550ae;
+    --ds-success: #1a7f37;
+    --ds-success-emphasis: #1a7f37;
+    --ds-danger: #cf222e;
+}
+
 html, body {
     background-color: var(--ds-bg-canvas);
     color: var(--ds-text);
     font-family: var(--ds-font-sans);
 }
+
+    /* ===== Tamaños de fuente (Configuracion) ===== */
+    body.font-small {
+        font-size: .875rem;
+    }
+
+    body.font-medium {
+        font-size: 1rem;
+    }
+
+    body.font-large {
+        font-size: 1.125rem;
+    }
 
 a {
     color: var(--ds-accent);
@@ -29,11 +61,11 @@ a {
 }
 
     a:hover {
-        color: #79c0ff;
+        color: var(--ds-accent-emphasis);
         text-decoration: underline;
     }
 
-/* Topbar */
+/* ===== Navbar ===== */
 .navbar.ds-topbar {
     background-color: var(--ds-bg-secondary) !important;
     border-bottom: 1px solid var(--ds-border);
@@ -58,7 +90,7 @@ a {
         color: var(--ds-text) !important;
     }
 
-/* Botones */
+/* ===== Botones ===== */
 .btn-ds-primary {
     background-color: var(--ds-success-emphasis);
     border: 1px solid rgba(240,246,252,.1);
@@ -77,12 +109,23 @@ a {
 }
 
     .btn-ds-outline:hover {
-        background-color: #262c34;
-        border-color: #8b949e;
+        background-color: var(--ds-bg-secondary);
+        border-color: var(--ds-text-muted);
         color: var(--ds-text);
     }
 
-/* Shell / cards */
+.btn-ds-danger {
+    background-color: transparent;
+    border: 1px solid var(--ds-danger);
+    color: var(--ds-danger);
+}
+
+    .btn-ds-danger:hover {
+        background-color: var(--ds-danger);
+        color: #fff;
+    }
+
+/* ===== Layout ===== */
 .ds-shell {
     max-width: 1080px;
 }
@@ -91,13 +134,14 @@ a {
     background-color: var(--ds-bg-secondary);
     border: 1px solid var(--ds-border);
     border-radius: var(--ds-radius);
+    padding: 1.25rem;
 }
 
-/* Hero (landing) */
+/* ===== Hero ===== */
 .ds-hero {
     border: 1px solid var(--ds-border);
     border-radius: var(--ds-radius);
-    background: var(--ds-bg-secondary);
+    background: linear-gradient(180deg, var(--ds-bg-secondary) 0%, var(--ds-bg-canvas) 100%);
     padding: 2.25rem 2rem;
     margin-bottom: 1.5rem;
 }
@@ -105,6 +149,7 @@ a {
     .ds-hero h1 {
         font-weight: 700;
         margin-bottom: .5rem;
+        color: var(--ds-text);
     }
 
     .ds-hero p {
@@ -118,9 +163,10 @@ a {
     color: var(--ds-success);
     text-transform: uppercase;
     letter-spacing: .04em;
+    margin-bottom: .5rem;
 }
 
-/* Toolbar / búsqueda */
+/* ===== Toolbar / búsqueda ===== */
 .ds-toolbar {
     display: flex;
     flex-wrap: wrap;
@@ -132,9 +178,12 @@ a {
 
 .ds-search {
     flex: 1 1 260px;
+    display: flex;
+    gap: .5rem;
 }
 
-    .ds-search .form-control {
+    .ds-search .form-control,
+    .ds-search input {
         background-color: var(--ds-bg-secondary);
         border: 1px solid var(--ds-border);
         color: var(--ds-text);
@@ -151,7 +200,7 @@ a {
             box-shadow: 0 0 0 3px rgba(88,166,255,.15);
         }
 
-/* Listado de preguntas */
+/* ===== Lista de preguntas (landing) ===== */
 .ds-question-list {
     border: 1px solid var(--ds-border);
     border-radius: var(--ds-radius);
@@ -164,6 +213,7 @@ a {
     padding: 1rem 1.25rem;
     background-color: var(--ds-bg-secondary);
     border-bottom: 1px solid var(--ds-border-muted);
+    transition: background-color .12s;
 }
 
     .ds-question-item:last-child {
@@ -179,16 +229,16 @@ a {
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    min-width: 64px;
+    min-width: 72px;
     text-align: center;
     color: var(--ds-text-muted);
     font-size: .8rem;
+    gap: .15rem;
 }
 
     .ds-question-stats strong {
-        font-size: 1rem;
+        font-size: 1.1rem;
         color: var(--ds-text);
-        line-height: 1.1;
     }
 
     .ds-question-stats.is-resuelta strong {
@@ -203,7 +253,9 @@ a {
 .ds-question-title {
     color: var(--ds-accent);
     font-weight: 600;
-    font-size: 1.02rem;
+    font-size: 1rem;
+    display: block;
+    margin-bottom: .2rem;
 }
 
     .ds-question-title:hover {
@@ -212,8 +264,8 @@ a {
 
 .ds-question-excerpt {
     color: var(--ds-text-muted);
-    font-size: .88rem;
-    margin: .25rem 0 .5rem;
+    font-size: .875rem;
+    margin: 0 0 .5rem;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
@@ -228,6 +280,7 @@ a {
     flex-wrap: wrap;
 }
 
+/* ===== Tags / badges ===== */
 .ds-tag {
     display: inline-block;
     font-family: var(--ds-font-mono);
@@ -237,6 +290,12 @@ a {
     background-color: rgba(88,166,255,.12);
     color: var(--ds-accent);
     border: 1px solid rgba(88,166,255,.3);
+}
+
+body.light-theme .ds-tag {
+    background-color: rgba(9,105,218,.1);
+    color: var(--ds-accent);
+    border-color: rgba(9,105,218,.3);
 }
 
 .ds-badge-resuelta {
@@ -251,7 +310,7 @@ a {
     padding: .12rem .55rem;
 }
 
-/* Avatares */
+/* ===== Avatares ===== */
 .ds-avatar {
     display: inline-flex;
     align-items: center;
@@ -284,7 +343,7 @@ a {
     font-size: 1.8rem;
 }
 
-/* Perfil */
+/* ===== Perfil ===== */
 .ds-profile-card {
     background-color: var(--ds-bg-secondary);
     border: 1px solid var(--ds-border);
@@ -305,6 +364,7 @@ a {
     .ds-profile-stats div strong {
         display: block;
         font-size: 1.1rem;
+        color: var(--ds-text);
     }
 
     .ds-profile-stats div span {
@@ -339,7 +399,7 @@ a {
         color: #fff;
     }
 
-/* Formularios */
+/* ===== Formularios ===== */
 .ds-form-section {
     background-color: var(--ds-bg-secondary);
     border: 1px solid var(--ds-border);
@@ -348,21 +408,25 @@ a {
 }
 
     .ds-form-section h5 {
-        font-size: .85rem;
+        font-size: .8rem;
         text-transform: uppercase;
-        letter-spacing: .04em;
+        letter-spacing: .06em;
         color: var(--ds-text-muted);
         margin-bottom: 1rem;
     }
 
-    .ds-form-section .form-control, .ds-form-section textarea {
+    .ds-form-section .form-control,
+    .ds-form-section textarea,
+    .ds-form-section select,
+    .ds-form-section input[type="file"] {
         background-color: var(--ds-bg-canvas);
         border: 1px solid var(--ds-border);
         color: var(--ds-text);
-        max-width: 100%;
     }
 
-        .ds-form-section .form-control:focus, .ds-form-section textarea:focus {
+        .ds-form-section .form-control:focus,
+        .ds-form-section textarea:focus,
+        .ds-form-section select:focus {
             background-color: var(--ds-bg-canvas);
             border-color: var(--ds-accent);
             color: var(--ds-text);
@@ -371,15 +435,133 @@ a {
 
     .ds-form-section label {
         font-weight: 600;
-        font-size: .85rem;
+        font-size: .875rem;
+        color: var(--ds-text);
     }
 
-    .ds-form-section .text-muted-help {
-        font-size: .75rem;
-        color: var(--ds-text-muted);
+.text-muted-help {
+    font-size: .75rem;
+    color: var(--ds-text-muted);
+}
+
+.ds-form-hint {
+    font-size: .78rem;
+    color: var(--ds-text-muted);
+    margin-top: .25rem;
+}
+
+/* ===== Bloques de código ===== */
+.ds-code-block {
+    background-color: #010409;
+    color: #e6edf3;
+    border: 1px solid var(--ds-border);
+    border-radius: var(--ds-radius);
+    padding: 1rem 1.25rem;
+    font-family: var(--ds-font-mono);
+    font-size: .85rem;
+    white-space: pre-wrap;
+    overflow-x: auto;
+}
+
+.ds-code-textarea {
+    font-family: var(--ds-font-mono) !important;
+    font-size: .85rem !important;
+    background-color: #010409 !important;
+    color: #e6edf3 !important;
+    border: 1px solid var(--ds-border) !important;
+    resize: vertical;
+}
+
+    .ds-code-textarea:focus {
+        border-color: var(--ds-accent) !important;
+        box-shadow: 0 0 0 3px rgba(88,166,255,.15) !important;
     }
 
-/* Footer */
+/* ===== Alertas ===== */
+.ds-alert-success {
+    background-color: rgba(63,185,80,.12);
+    border: 1px solid rgba(63,185,80,.35);
+    color: var(--ds-success);
+    border-radius: var(--ds-radius);
+    padding: .75rem 1rem;
+    margin-bottom: 1rem;
+}
+
+.ds-alert-danger {
+    background-color: rgba(248,81,73,.12);
+    border: 1px solid rgba(248,81,73,.35);
+    color: var(--ds-danger);
+    border-radius: var(--ds-radius);
+    padding: .75rem 1rem;
+    margin-bottom: 1rem;
+}
+
+.ds-alert-info {
+    background-color: rgba(88,166,255,.1);
+    border: 1px solid rgba(88,166,255,.3);
+    color: var(--ds-accent);
+    border-radius: var(--ds-radius);
+    padding: .75rem 1rem;
+    margin-bottom: 1rem;
+}
+
+/* ===== Auth (login / register) ===== */
+.ds-auth-wrap {
+    min-height: 70vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem 1rem;
+}
+
+.ds-auth-box {
+    width: 100%;
+    max-width: 380px;
+    background-color: var(--ds-bg-secondary);
+    border: 1px solid var(--ds-border);
+    border-radius: var(--ds-radius);
+    padding: 2rem;
+}
+
+    .ds-auth-box h2 {
+        font-size: 1.2rem;
+        font-weight: 700;
+        margin-bottom: 1.5rem;
+        text-align: center;
+        color: var(--ds-text);
+        font-family: var(--ds-font-mono);
+    }
+
+    .ds-auth-box .form-control {
+        background-color: var(--ds-bg-canvas);
+        border: 1px solid var(--ds-border);
+        color: var(--ds-text);
+    }
+
+        .ds-auth-box .form-control:focus {
+            background-color: var(--ds-bg-canvas);
+            border-color: var(--ds-accent);
+            color: var(--ds-text);
+            box-shadow: 0 0 0 3px rgba(88,166,255,.15);
+        }
+
+    .ds-auth-box label {
+        font-size: .875rem;
+        font-weight: 600;
+        color: var(--ds-text);
+    }
+
+/* ===== Imagen thumbnail dark ===== */
+.ds-img-preview {
+    max-width: 320px;
+    max-height: 260px;
+    object-fit: contain;
+    border: 1px solid var(--ds-border);
+    border-radius: var(--ds-radius);
+    margin-top: .5rem;
+}
+
+/* ===== Footer ===== */
 footer.ds-footer {
     border-top: 1px solid var(--ds-border);
     color: var(--ds-text-muted);
@@ -387,6 +569,7 @@ footer.ds-footer {
     padding-top: 1rem;
 }
 
+/* ===== Responsive ===== */
 @media (max-width: 576px) {
     .ds-question-item {
         flex-direction: column;
@@ -397,55 +580,4 @@ footer.ds-footer {
         gap: .75rem;
         min-width: 0;
     }
-}
-
-body.light-theme {
-    --ds-bg-canvas: #f5f5f5;
-    --ds-bg-secondary: #ffffff;
-    --ds-bg-tertiary: #f1f3f5;
-    --ds-border: #d0d7de;
-    --ds-border-muted: #e5e7eb;
-    --ds-text: #24292f;
-    --ds-text-muted: #57606a;
-    --ds-accent: #0969da;
-    --ds-accent-emphasis: #0550ae;
-    --ds-success: #1a7f37;
-    --ds-success-emphasis: #116329;
-}
-
-body.font-small {
-    font-size: 14px;
-}
-
-body.font-medium {
-    font-size: 16px;
-}
-
-body.font-large {
-    font-size: 19px;
-}
-
-body.light-theme .ds-card,
-body.light-theme .ds-form-section,
-body.light-theme .ds-profile-card,
-body.light-theme .ds-question-list,
-body.light-theme .ds-question-item,
-body.light-theme .ds-hero {
-    background: white;
-    color: #212529;
-    border-color: #d0d7de;
-}
-
-body.light-theme h1,
-body.light-theme h2,
-body.light-theme h3,
-body.light-theme h4,
-body.light-theme h5 {
-    color: #212529;
-}
-
-body.light-theme p,
-body.light-theme label,
-body.light-theme span {
-    color: #495057;
 }
