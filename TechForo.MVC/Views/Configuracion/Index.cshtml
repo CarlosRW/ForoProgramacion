@@ -7,7 +7,7 @@
 <div class="ds-hero">
     <div class="ds-hero-tag">// configuración del foro</div>
 
-    <h1>⚙️ Configuración</h1>
+    <h1>Configuración</h1>
 
     <p>
         Personalizá algunas preferencias de visualización del foro.
@@ -19,8 +19,8 @@
 
         @if (TempData["Mensaje"] != null)
         {
-            <div class="alert alert-success mt-3">
-                <strong>✔</strong> @TempData["Mensaje"]
+            <div class="alert alert-success">
+                @TempData["Mensaje"]
             </div>
         }
 
@@ -31,7 +31,7 @@
             <div class="mb-4">
                 <h5>Tema</h5>
 
-                <div class="form-check form-switch">
+                <div class="form-check">
                     @Html.CheckBoxFor(m => m.ModoOscuro, new { @class = "form-check-input" })
                     @Html.LabelFor(m => m.ModoOscuro, new { @class = "form-check-label" })
                 </div>
@@ -39,46 +39,15 @@
 
             <hr />
 
-            <hr />
-
-            <div class="mb-4">
-                <h5>Tamaño de fuente</h5>
-
-                @Html.DropDownListFor(
-                    m => m.TamanoFuente,
-                    new SelectList(new[]
-                    {
-                        "Pequeño",
-                        "Mediano",
-                        "Grande"
-                    }),
-                    new { @class = "form-select" })
-            </div>
-
-            <hr />
-
-            <div class="mb-4">
-                <h5>Idioma</h5>
-
-                @Html.DropDownListFor(
-                    m => m.Idioma,
-                    new SelectList(new[]
-                    {
-                        "Español",
-                        "English"
-                    }),
-                    new { @class = "form-select" })
-            </div>
-
             <div class="mb-4">
                 <h5>Contenido</h5>
 
-                <div class="form-check form-switch">
+                <div class="form-check">
                     @Html.CheckBoxFor(m => m.MostrarImagenes, new { @class = "form-check-input" })
                     @Html.LabelFor(m => m.MostrarImagenes, new { @class = "form-check-label" })
                 </div>
 
-                <div class="form-check form-switch">
+                <div class="form-check mt-2">
                     @Html.CheckBoxFor(m => m.MostrarCodigo, new { @class = "form-check-input" })
                     @Html.LabelFor(m => m.MostrarCodigo, new { @class = "form-check-label" })
                 </div>
@@ -89,7 +58,7 @@
             <div class="mb-4">
                 <h5>Notificaciones</h5>
 
-                <div class="form-check form-switch">
+                <div class="form-check">
                     @Html.CheckBoxFor(m => m.Notificaciones, new { @class = "form-check-input" })
                     @Html.LabelFor(m => m.Notificaciones, new { @class = "form-check-label" })
                 </div>
@@ -110,8 +79,6 @@
         border: 1px solid #334155;
         border-radius: 12px;
         color: #e5e7eb;
-        max-width: 700px;
-        margin: 40px auto;
     }
 
     .form-check {
@@ -124,9 +91,5 @@
 
     hr {
         border-color: #334155;
-    }
-
-    .btn-ds-primary {
-        margin-top: 15px;
     }
 </style>

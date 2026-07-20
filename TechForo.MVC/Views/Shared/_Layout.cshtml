@@ -8,38 +8,7 @@
     @Styles.Render("~/Content/css")
     @Scripts.Render("~/bundles/modernizr")
 </head>
-
-
-@{
-    bool modoOscuro = true;
-
-    if (Session["ModoOscuro"] != null)
-    {
-        modoOscuro = (bool)Session["ModoOscuro"];
-    }
-
-    string fuente = "font-medium";
-
-    if (Session["TamanoFuente"] != null)
-    {
-        switch (Session["TamanoFuente"].ToString())
-        {
-            case "Pequeño":
-                fuente = "font-small";
-                break;
-
-            case "Grande":
-                fuente = "font-large";
-                break;
-
-            default:
-                fuente = "font-medium";
-                break;
-        }
-    }
-}
-
-<body class="@(modoOscuro ? "dark-theme" : "light-theme") @fuente">
+<body>
     <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-dark ds-topbar">
         <div class="container ds-shell">
             @Html.ActionLink("</> TechForum", "Index", "Home", new { area = "" }, new { @class = "navbar-brand ds-brand" })
