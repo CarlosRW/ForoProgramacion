@@ -18,3 +18,100 @@ select,
 textarea {
     max-width: 280px;
 }
+
+/* =========================================
+   TAMAÑO DE FUENTE DE LA APLICACIÓN
+   ========================================= */
+
+/* Tamaño base */
+body.font-small {
+    --app-font-size: 14px;
+}
+
+body.font-medium {
+    --app-font-size: 17px;
+}
+
+body.font-large {
+    --app-font-size: 21px;
+}
+
+
+    /* =========================================
+   APLICAR FUENTE GLOBALMENTE
+   ========================================= */
+
+    body.font-small *,
+    body.font-medium *,
+    body.font-large * {
+        font-size: var(--app-font-size) !important;
+    }
+
+
+/* =========================================
+   TÍTULOS
+   ========================================= */
+
+body.font-small h1 {
+    font-size: 2rem !important;
+}
+
+body.font-medium h1 {
+    font-size: 2.5rem !important;
+}
+
+body.font-large h1 {
+    font-size: 3rem !important;
+}
+
+
+body.font-small h2 {
+    font-size: 1.6rem !important;
+}
+
+body.font-medium h2 {
+    font-size: 2rem !important;
+}
+
+body.font-large h2 {
+    font-size: 2.4rem !important;
+}
+
+
+body.font-small h3 {
+    font-size: 1.3rem !important;
+}
+
+body.font-medium h3 {
+    font-size: 1.6rem !important;
+}
+
+body.font-large h3 {
+    font-size: 2rem !important;
+}
+
+
+/* =========================================
+   CONTROLES DE FORMULARIO
+   ========================================= */
+
+body.font-small input,
+body.font-small select,
+body.font-small textarea,
+body.font-small button {
+    font-size: 14px !important;
+}
+
+body.font-medium input,
+body.font-medium select,
+body.font-medium textarea,
+body.font-medium button {
+    font-size: 17px !important;
+}
+
+body.font-large input,
+body.font-large select,
+body.font-large textarea,
+body.font-large button {
+    font-size: 21px !important;
+}

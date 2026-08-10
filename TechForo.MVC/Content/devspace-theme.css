@@ -451,30 +451,33 @@ body.light-theme .ds-tag {
 }
 
 /* ===== Bloques de código ===== */
+
 .ds-code-block {
-    background-color: #010409;
-    color: #e6edf3;
+    background-color: var(--ds-bg-tertiary);
+    color: var(--ds-text);
     border: 1px solid var(--ds-border);
     border-radius: var(--ds-radius);
     padding: 1rem 1.25rem;
     font-family: var(--ds-font-mono);
-    font-size: .85rem;
+    font-size: .9em;
     white-space: pre-wrap;
     overflow-x: auto;
 }
 
 .ds-code-textarea {
-    font-family: var(--ds-font-mono) !important;
-    font-size: .85rem !important;
-    background-color: #010409 !important;
-    color: #e6edf3 !important;
-    border: 1px solid var(--ds-border) !important;
+    font-family: var(--ds-font-mono);
+    font-size: .9em;
+    background-color: var(--ds-bg-tertiary);
+    color: var(--ds-text);
+    border: 1px solid var(--ds-border);
     resize: vertical;
 }
 
     .ds-code-textarea:focus {
-        border-color: var(--ds-accent) !important;
-        box-shadow: 0 0 0 3px rgba(88,166,255,.15) !important;
+        background-color: var(--ds-bg-tertiary);
+        color: var(--ds-text);
+        border-color: var(--ds-accent);
+        box-shadow: 0 0 0 3px rgba(88,166,255,.15);
     }
 
 /* ===== Alertas ===== */
@@ -580,4 +583,150 @@ footer.ds-footer {
         gap: .75rem;
         min-width: 0;
     }
+}
+
+/* =========================================
+   DETAILS - CONTENIDO
+   ========================================= */
+
+.ds-content-text {
+    color: var(--ds-text);
+    white-space: pre-wrap;
+}
+
+.ds-text-muted {
+    color: var(--ds-text-muted);
+}
+
+.ds-form-label {
+    color: var(--ds-text);
+    font-weight: 600;
+}
+
+.ds-form-control {
+    background-color: var(--ds-bg-canvas);
+    border-color: var(--ds-border);
+    color: var(--ds-text);
+}
+
+    .ds-form-control:focus {
+        background-color: var(--ds-bg-canvas);
+        color: var(--ds-text);
+        border-color: var(--ds-accent);
+    }
+
+
+/* =========================================
+   BLOQUES DE CÓDIGO
+   ========================================= */
+
+.ds-code-block {
+    background-color: var(--ds-bg-tertiary);
+    color: var(--ds-text);
+    border: 1px solid var(--ds-border);
+    border-radius: var(--ds-radius);
+    padding: 1rem 1.25rem;
+    font-family: var(--ds-font-mono);
+    font-size: 1em;
+    white-space: pre-wrap;
+    overflow-x: auto;
+}
+
+    .ds-code-block code {
+        color: inherit;
+        font-size: inherit;
+        font-family: inherit;
+    }
+
+.ds-code-textarea {
+    font-family: var(--ds-font-mono);
+    font-size: inherit;
+    background-color: var(--ds-bg-tertiary);
+    color: var(--ds-text);
+    border: 1px solid var(--ds-border);
+    resize: vertical;
+}
+
+    .ds-code-textarea:focus {
+        background-color: var(--ds-bg-tertiary);
+        color: var(--ds-text);
+        border-color: var(--ds-accent);
+    }
+
+
+/* =========================================
+   IMÁGENES
+   ========================================= */
+
+.ds-img-preview {
+    max-width: 100%;
+    height: auto;
+}
+
+
+/* =========================================
+   TAMAÑO DE FUENTE
+   ========================================= */
+
+body.font-small {
+    font-size: 14px;
+}
+
+body.font-medium {
+    font-size: 16px;
+}
+
+body.font-large {
+    font-size: 20px;
+}
+
+
+/* Elementos que deben respetar el tamaño elegido */
+
+body.font-small .ds-question-meta,
+body.font-small .ds-content-text,
+body.font-small .ds-tag,
+body.font-small .ds-form-label,
+body.font-small .form-control,
+body.font-small .btn {
+    font-size: 14px;
+}
+
+body.font-medium .ds-question-meta,
+body.font-medium .ds-content-text,
+body.font-medium .ds-tag,
+body.font-medium .ds-form-label,
+body.font-medium .form-control,
+body.font-medium .btn {
+    font-size: 16px;
+}
+
+body.font-large .ds-question-meta,
+body.font-large .ds-content-text,
+body.font-large .ds-tag,
+body.font-large .ds-form-label,
+body.font-large .form-control,
+body.font-large .btn {
+    font-size: 20px;
+}
+
+
+/* Código también respeta el tamaño seleccionado */
+
+body.font-small .ds-code-block,
+body.font-small .ds-code-block code,
+body.font-small .ds-code-textarea {
+    font-size: 14px;
+}
+
+body.font-medium .ds-code-block,
+body.font-medium .ds-code-block code,
+body.font-medium .ds-code-textarea {
+    font-size: 16px;
+}
+
+body.font-large .ds-code-block,
+body.font-large .ds-code-block code,
+body.font-large .ds-code-textarea {
+    font-size: 20px;
 }

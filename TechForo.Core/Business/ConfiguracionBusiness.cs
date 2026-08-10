@@ -10,10 +10,12 @@ namespace TechForo.Core.Business
         {
             return new ConfiguracionModel
             {
-                ModoOscuro = true,
+                ModoOscuro = false,
                 MostrarImagenes = true,
                 MostrarCodigo = true,
-                Notificaciones = true
+                VistaCompacta = false,
+                TamanoFuente = "Mediano",
+                Idioma = "Español"
             };
         }
 

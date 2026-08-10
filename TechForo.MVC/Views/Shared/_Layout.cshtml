@@ -11,7 +11,7 @@
 
 
 @{
-    bool modoOscuro = true;
+    bool modoOscuro = false;
 
     if (Session["ModoOscuro"] != null)
     {
@@ -37,6 +37,21 @@
                 break;
         }
     }
+
+    string idioma = "Español";
+
+    if (Session["Idioma"] != null)
+    {
+        idioma = Session["Idioma"].ToString();
+    }
+
+    string textoInicio = idioma == "English" ? "Home" : "Inicio";
+    string textoPreguntas = idioma == "English" ? "Questions" : "Preguntas";
+    string textoPerfil = idioma == "English" ? "My profile" : "Mi perfil";
+    string textoConfiguracion = idioma == "English" ? "Settings" : "Configuración";
+    string textoCerrarSesion = idioma == "English" ? "Log out" : "Cerrar sesión";
+    string textoIniciarSesion = idioma == "English" ? "Log in" : "Iniciar sesión";
+    string textoRegistrarse = idioma == "English" ? "Register" : "Registrarse";
 }
 
 <body class="@(modoOscuro ? "dark-theme" : "light-theme") @fuente">
@@ -52,11 +67,11 @@
             <div class="collapse navbar-collapse d-sm-inline-flex justify-content-between">
                 <ul class="navbar-nav flex-grow-1">
                     <li>
-                        @Html.ActionLink("Inicio", "Index", "Home", new { area = "" }, new { @class = "nav-link" })
+                        @Html.ActionLink(textoInicio, "Index", "Home", new { area = "" }, new { @class = "nav-link" })
                     </li>
 
                     <li>
-                        @Html.ActionLink("Preguntas", "Index", "Preguntas", new { area = "" }, new { @class = "nav-link" })
+                        @Html.ActionLink(textoPreguntas, "Index", "Preguntas", new { area = "" }, new { @class = "nav-link" })
                     </li>
                 </ul>
 
@@ -64,23 +79,23 @@
                     @if (Request.IsAuthenticated)
                     {
                         <li class="nav-item">
-                            @Html.ActionLink("Mi perfil", "Perfil", "Account", new { area = "" }, new { @class = "nav-link ds-avatar-link" })
+                            @Html.ActionLink(textoPerfil, "Perfil", "Account", new { area = "" }, new { @class = "nav-link ds-avatar-link" })
                         </li>
                         <li>
-                            @Html.ActionLink("Configuración", "Index", "Configuracion", null, new { @class = "nav-link" })
+                            @Html.ActionLink(textoConfiguracion, "Index", "Configuracion", null, new { @class = "nav-link" })
                         </li>
                         <li>
-                            @Html.ActionLink("Cerrar sesión", "Logout", "Account", new { area = "" }, new { @class = "nav-link" })
+                            @Html.ActionLink(textoCerrarSesion, "Logout", "Account", new { area = "" }, new { @class = "nav-link" })
                         </li>
                     }
                     else
                     {
                         <li>
-                            @Html.ActionLink("Iniciar sesión", "Login", "Account", new { area = "" }, new { @class = "nav-link" })
+                            @Html.ActionLink(textoIniciarSesion, "Login", "Account", new { area = "" }, new { @class = "nav-link" })
                         </li>
 
                         <li>
-                            @Html.ActionLink("Registrarse", "Register", "Account", new { area = "" }, new { @class = "nav-link" })
+                            @Html.ActionLink(textoRegistrarse, "Register", "Account", new { area = "" }, new { @class = "nav-link" })
                         </li>
                     }
                 </ul>

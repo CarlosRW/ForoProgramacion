@@ -1,132 +1,153 @@
 @model TechForo.Models.Vista_de_modelos.ConfiguracionModel
 
 @{
-    ViewBag.Title = "Configuración";
+    string idioma = Model.Idioma ?? "Español";
+    bool ingles = idioma == "English";
+
+    ViewBag.Title = ingles ? "Settings" : "Configuración";
+
+    string titulo = ingles ? "⚙️ Settings" : "⚙️ Configuración";
+    string descripcion = ingles
+        ? "Customize some forum display preferences."
+        : "Personalizá algunas preferencias de visualización del foro.";
+
+    string tema = ingles ? "Theme" : "Tema";
+    string modoOscuro = ingles ? "Dark mode" : "Modo oscuro";
+
+    string tamanoFuente = ingles ? "Font size" : "Tamaño de fuente";
+    string pequeno = ingles ? "Small" : "Pequeño";
+    string mediano = ingles ? "Medium" : "Mediano";
+    string grande = ingles ? "Large" : "Grande";
+
+    string idiomaTexto = ingles ? "Language" : "Idioma";
+    string contenido = ingles ? "Content" : "Contenido";
+
+    string mostrarImagenes = ingles ? "Show images" : "Mostrar imágenes";
+    string mostrarCodigo = ingles ? "Show code blocks" : "Mostrar bloques de código";
+
+    string vista = ingles ? "View" : "Vista";
+    string vistaCompacta = ingles ? "Compact view" : "Vista compacta";
+
+    string descripcionCompacta = ingles
+        ? "Reduces the spacing between elements to display more content on screen."
+        : "Reduce el espacio entre los elementos para mostrar más contenido en pantalla.";
+
+    string guardar = ingles ? "Save settings" : "Guardar configuración";
 }
 
-<div class="ds-hero">
-    <div class="ds-hero-tag">// configuración del foro</div>
+<div class="container">
 
-    <h1>⚙️ Configuración</h1>
+    <h1>@titulo</h1>
 
     <p>
-        Personalizá algunas preferencias de visualización del foro.
+        @descripcion
     </p>
+
+    @if (TempData["Mensaje"] != null)
+    {
+        <div class="alert alert-success mt-3">
+            <strong>✔</strong> @TempData["Mensaje"]
+        </div>
+    }
+
+    @using (Html.BeginForm())
+    {
+        @Html.AntiForgeryToken()
+
+        <div class="mb-4">
+            <h5>@tema</h5>
+
+            <div class="form-check form-switch">
+                @Html.CheckBoxFor(
+                    m => m.ModoOscuro,
+                    new { @class = "form-check-input" })
+
+                <label class="form-check-label">
+                    @modoOscuro
+                </label>
+            </div>
+        </div>
+
+        <hr />
+
+        <div class="mb-4">
+            <h5>@tamanoFuente</h5>
+
+            @Html.DropDownListFor(
+                m => m.TamanoFuente,
+                new SelectList(new[]
+                {
+                    pequeno,
+                    mediano,
+                    grande
+                }),
+                new { @class = "form-select" })
+        </div>
+
+        <hr />
+
+        <div class="mb-4">
+            <h5>@idiomaTexto</h5>
+
+            @Html.DropDownListFor(
+                m => m.Idioma,
+                new SelectList(new[]
+                {
+                    "Español",
+                    "English"
+                }),
+                new { @class = "form-select" })
+        </div>
+
+        <hr />
+
+        <div class="mb-4">
+            <h5>@contenido</h5>
+
+            <div class="form-check form-switch">
+                @Html.CheckBoxFor(
+                    m => m.MostrarImagenes,
+                    new { @class = "form-check-input" })
+
+                <label class="form-check-label">
+                    @mostrarImagenes
+                </label>
+            </div>
+
+            <div class="form-check form-switch">
+                @Html.CheckBoxFor(
+                    m => m.MostrarCodigo,
+                    new { @class = "form-check-input" })
+
+                <label class="form-check-label">
+                    @mostrarCodigo
+                </label>
+            </div>
+        </div>
+
+        <hr />
+
+        <div class="mb-4">
+            <h5>@vista</h5>
+
+            <div class="form-check form-switch">
+                @Html.CheckBoxFor(
+                    m => m.VistaCompacta,
+                    new { @class = "form-check-input" })
+
+                <label class="form-check-label">
+                    @vistaCompacta
+                </label>
+            </div>
+
+            <small class="text-muted">
+                @descripcionCompacta
+            </small>
+        </div>
+
+        <button class="btn btn-ds-primary" type="submit">
+            @guardar
+        </button>
+    }
+
 </div>
-
-<div class="card ds-card">
-    <div class="card-body">
-
-        @if (TempData["Mensaje"] != null)
-        {
-            <div class="alert alert-success mt-3">
-                <strong>✔</strong> @TempData["Mensaje"]
-            </div>
-        }
-
-        @using (Html.BeginForm())
-        {
-            @Html.AntiForgeryToken()
-
-            <div class="mb-4">
-                <h5>Tema</h5>
-
-                <div class="form-check form-switch">
-                    @Html.CheckBoxFor(m => m.ModoOscuro, new { @class = "form-check-input" })
-                    @Html.LabelFor(m => m.ModoOscuro, new { @class = "form-check-label" })
-                </div>
-            </div>
-
-            <hr />
-
-            <hr />
-
-            <div class="mb-4">
-                <h5>Tamaño de fuente</h5>
-
-                @Html.DropDownListFor(
-                    m => m.TamanoFuente,
-                    new SelectList(new[]
-                    {
-                        "Pequeño",
-                        "Mediano",
-                        "Grande"
-                    }),
-                    new { @class = "form-select" })
-            </div>
-
-            <hr />
-
-            <div class="mb-4">
-                <h5>Idioma</h5>
-
-                @Html.DropDownListFor(
-                    m => m.Idioma,
-                    new SelectList(new[]
-                    {
-                        "Español",
-                        "English"
-                    }),
-                    new { @class = "form-select" })
-            </div>
-
-            <div class="mb-4">
-                <h5>Contenido</h5>
-
-                <div class="form-check form-switch">
-                    @Html.CheckBoxFor(m => m.MostrarImagenes, new { @class = "form-check-input" })
-                    @Html.LabelFor(m => m.MostrarImagenes, new { @class = "form-check-label" })
-                </div>
-
-                <div class="form-check form-switch">
-                    @Html.CheckBoxFor(m => m.MostrarCodigo, new { @class = "form-check-input" })
-                    @Html.LabelFor(m => m.MostrarCodigo, new { @class = "form-check-label" })
-                </div>
-            </div>
-
-            <hr />
-
-            <div class="mb-4">
-                <h5>Notificaciones</h5>
-
-                <div class="form-check form-switch">
-                    @Html.CheckBoxFor(m => m.Notificaciones, new { @class = "form-check-input" })
-                    @Html.LabelFor(m => m.Notificaciones, new { @class = "form-check-label" })
-                </div>
-            </div>
-
-            <button class="btn btn-ds-primary" type="submit">
-                Guardar configuración
-            </button>
-        }
-
-    </div>
-</div>
-
-<style>
-
-    .ds-card {
-        background: #111827;
-        border: 1px solid #334155;
-        border-radius: 12px;
-        color: #e5e7eb;
-        max-width: 700px;
-        margin: 40px auto;
-    }
-
-    .form-check {
-        margin-top: 12px;
-    }
-
-    h5 {
-        color: #f8fafc;
-    }
-
-    hr {
-        border-color: #334155;
-    }
-
-    .btn-ds-primary {
-        margin-top: 15px;
-    }
-</style>

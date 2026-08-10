@@ -34,7 +34,7 @@ namespace TechForo.MVC.Controllers
                 model.ModoOscuro = (bool)Session["ModoOscuro"];
                 model.MostrarImagenes = (bool)Session["MostrarImagenes"];
                 model.MostrarCodigo = (bool)Session["MostrarCodigo"];
-                model.Notificaciones = (bool)Session["Notificaciones"];
+                model.VistaCompacta = (bool)Session["VistaCompacta"];
                 if (Session["TamanoFuente"] != null)
                     model.TamanoFuente = Session["TamanoFuente"].ToString();
 
@@ -58,11 +58,18 @@ namespace TechForo.MVC.Controllers
             Session["ModoOscuro"] = model.ModoOscuro;
             Session["MostrarImagenes"] = model.MostrarImagenes;
             Session["MostrarCodigo"] = model.MostrarCodigo;
-            Session["Notificaciones"] = model.Notificaciones;
+            Session["VistaCompacta"] = model.VistaCompacta;
             Session["TamanoFuente"] = model.TamanoFuente;
             Session["Idioma"] = model.Idioma;
 
-            TempData["Mensaje"] = "Configuración guardada correctamente.";
+            if (model.Idioma == "English")
+            {
+                TempData["Mensaje"] = "Settings saved successfully.";
+            }
+            else
+            {
+                TempData["Mensaje"] = "Configuración guardada correctamente.";
+            }
 
             return RedirectToAction("Index");
 

@@ -19,7 +19,7 @@ namespace TechForo.Models.Vista_de_modelos
         [Display(Name = "Mostrar bloques de código")]
         public bool MostrarCodigo { get; set; } = true;
 
-        [Display(Name = "Recibir notificaciones")]
-        public bool Notificaciones { get; set; } = true;
+        [Display(Name = "Vista compacta")]
+        public bool VistaCompacta { get; set; } = false;
     }
-} 
+}
