@@ -38,6 +38,25 @@
         }
     }
 
+    bool mostrarImagenes = true;
+    bool mostrarCodigo = true;
+    bool vistaCompacta = false;
+
+    if (Session["MostrarImagenes"] != null)
+    {
+        mostrarImagenes = (bool)Session["MostrarImagenes"];
+    }
+
+    if (Session["MostrarCodigo"] != null)
+    {
+        mostrarCodigo = (bool)Session["MostrarCodigo"];
+    }
+
+    if (Session["VistaCompacta"] != null)
+    {
+        vistaCompacta = (bool)Session["VistaCompacta"];
+    }
+
     string idioma = "Español";
 
     if (Session["Idioma"] != null)
@@ -54,7 +73,7 @@
     string textoRegistrarse = idioma == "English" ? "Register" : "Registrarse";
 }
 
-<body class="@(modoOscuro ? "dark-theme" : "light-theme") @fuente">
+<body class="@(modoOscuro ? "dark-theme" : "light-theme") @fuente @(mostrarImagenes ? "" : "hide-images") @(mostrarCodigo ? "" : "hide-code") @(vistaCompacta ? "compact-view" : "")">
     <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-dark ds-topbar">
         <div class="container ds-shell">
             @Html.ActionLink("</> TechForum", "Index", "Home", new { area = "" }, new { @class = "navbar-brand ds-brand" })
